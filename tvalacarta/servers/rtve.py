@@ -17,11 +17,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
     # Extrae el código
     logger.info("url="+page_url)
-    patron = 'http://.*?/([0-9]+)/'
-    data = page_url
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    scrapertools.printMatches(matches)
-    codigo = matches[0]
+    codigo = scrapertools.find_single_match(page_url,'http://.*?/([0-9]+)')
     url=""
     itemlist = []
     logger.info("assetid="+codigo)
@@ -31,14 +27,17 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     # -- Método 24 Mayo 2013
     videoID = codigo
     logger.info("Probando método de 24 de uno de Mayo de 2013")
-    manager = "anubis"
     tipo = "videos"
-    url = "http://www.rtve.es/ztnr/movil/thumbnail/%s/%s/%s.png" % (manager, tipo, videoID)
+    url = "http://www.rtve.es/ztnr/movil/thumbnail/default/%s/%s.png" % (tipo, videoID)
 
     logger.info("Probando url:"+url)
-
+    print("Manager default")	
     from base64 import b64decode as decode
     tmp_ = decode(scrapertools.cachePage(url))
+    if tmp_== "" :
+        url = "http://www.rtve.es/ztnr/movil/thumbnail/anubis/%s/%s.png" % (tipo, videoID)
+        tmp_ = decode(scrapertools.cachePage(url)) 
+        print("Manager anubis")	
     tmp = re.findall(".*tEXt(.*)#[\x00]*([0-9]*).*", tmp_)[0]
     tmp = [n for n in tmp]
     cyphertext = tmp[0]
@@ -73,10 +72,20 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
     urlVideo = plaintext
     if urlVideo != "":
-        url_video = urlVideo.replace("www.rtve.es", "media5.rtve.es")
+	url_video = urlVideo.replace("www.rtve.es", "media5.rtve.es")
+
+	# -- CarlosJDelgado (mail@carlosjdelgado.com) -- Se obtiene la url con token tras un cambio en rtve
+	url_auth = "http://flash.akamaihd.multimedia.cdn.rtve.es/auth" + urlVideo[url_video.find("/resources"):] + "?v=2.6.8&fp=WIN%2016,0,0,305&r=TDBDO&g=UZEYDOLYKFLY"
+	logger.info("url_auth="+url_auth)
+
+	urlVideo = url_video[:urlVideo.find("/resources")] + urllib2.urlopen(url_auth).read()
+
     else:
         logger.info("No se pudo encontrar el enlace de descarga")
     url=urlVideo
+    
+    logger.info("url="+url)
+
 
     # -- Método 24 Mayo 2013 FIN
     

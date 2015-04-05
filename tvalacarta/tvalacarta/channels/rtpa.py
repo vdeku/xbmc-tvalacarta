@@ -109,19 +109,29 @@ def episodios(item):
     logger.info("tvalacarta.channels.rtpa episodios")
     itemlist = []
 
+    if "&fin=" not in item.url:
+        item.url = item.url + "&fin=1000"
+
     data = scrapertools.cache_page(item.url)
     json_object = jsontools.load_json(data)
     #logger.info("json_object="+repr(json_object))
     #logger.info("VOD="+repr(json_object["VOD"]))
 
     for vod in json_object["VOD"]:
+        logger.info("vod="+repr(vod))
         title = vod["nombre_programa"]
         if vod["titulo"]!="":
             title = title + " - " + vod["titulo"]
         if vod["fecha_emision"]!="":
             title = title + " ("+scrapertools.htmlclean(vod["fecha_emision"])+")"
         url = "http://www.rtpa.es/video:"+urllib.quote(vod["nombre_programa"])+"_"+vod["id_generado"]+".html"
-        thumbnail = urllib.quote(vod["url_imagen"]).replace("//","/").replace("http%3A/","http://")
+
+        try:
+            url_imagen = vod["url_imagen"]
+            thumbnail = urllib.quote(url_imagen).replace("//","/").replace("http%3A/","http://")
+        except:
+            thumbnail = ""
+
         plot = scrapertools.htmlclean(vod["sinopsis"])
         itemlist.append( Item(channel=CHANNELNAME, title=title , url=url,  thumbnail=thumbnail , plot=plot, fanart=thumbnail, server="rtpa", action="play" , show = item.title , viewmode="movie_with_plot", folder=False) )
 

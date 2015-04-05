@@ -28,10 +28,10 @@ def mainlist(item):
     data = scrapertools.cache_page(MAIN_URL)
     
     # Limita la página al bloque con las categorías
-    data = scrapertools.get_match(data,'<div class="anclas"><h1 class="programasOnline">Por temática</h1>(.*?)</div>')
+    data = scrapertools.get_match(data,'<div class="anclasProgramas">(.*?)</div>')
 
     # Extrae las categorias
-    patron = '<h2><a href="\#(portProgr[^"]+)">([^<]+)</a></h2>'
+    patron = '<h2><a href="/tv_a_la_carta/listado_de_programas\#(portProgr[^"]+)">([^<]+)</a></h2>'
     matches = re.compile(patron,re.DOTALL).findall(data)
     for scrapedurl,scrapedtitle in matches:
         title = scrapedtitle.strip()

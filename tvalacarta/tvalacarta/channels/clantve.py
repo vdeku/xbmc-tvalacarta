@@ -13,6 +13,7 @@ from core import jsontools
 
 DEBUG = True
 CHANNELNAME = "clantve"
+MAIN_URL = "http://www.rtve.es/api/agr-programas/490/programas.json?size=60&page=1"
 
 def isGeneric():
     return True
@@ -22,13 +23,16 @@ def mainlist(item):
 
     itemlist = []
     #itemlist.append( Item(channel=CHANNELNAME, title="Últimos vídeos añadidos" , url="http://www.rtve.es/infantil/components/TE_INFDEF/videos/videos-1.inc" , action="ultimos_videos" , folder=True) )
-    itemlist.append( Item(channel=CHANNELNAME, title="Todos los programas" , url="http://www.rtve.es/api/agr-programas/490/programas.json?size=60&page=1" , action="programas" , folder=True) )
+    itemlist.append( Item(channel=CHANNELNAME, title="Todos los programas" , url=MAIN_URL , action="programas" , folder=True) )
     return itemlist
 
 def programas(item):
     logger.info("tvalacarta.channels.clantv programas")
 
     itemlist = []
+
+    if item.url=="":
+        item.url = MAIN_URL
 
     # Descarga la página
     data = scrapertools.cache_page(item.url)
@@ -50,10 +54,11 @@ def programas(item):
         if (DEBUG): logger.info(" title=["+repr(title)+"], url=["+repr(url)+"], thumbnail=["+repr(thumbnail)+"] plot=["+repr(plot)+"]")
         itemlist.append( Item(channel=CHANNELNAME, title=title , action="episodios" , url=url, thumbnail=thumbnail, plot=plot , page=page, show=title , fanart=fanart, viewmode="movie_with_plot", folder=True) )
 
-    # Añade el resto de páginas
-    current_page = scrapertools.find_single_match(item.url,'page=(\d+)')
-    next_page = str( int(current_page)+1 )
-    itemlist.append(Item(channel=CHANNELNAME,action="programas",title=">> Página siguiente",url=item.url.replace("page="+current_page,"page="+next_page), folder=True))
+    # Añade el resto de páginas, siempre que haya al menos algún elemento
+    if len(itemlist)>0:
+        current_page = scrapertools.find_single_match(item.url,'page=(\d+)')
+        next_page = str( int(current_page)+1 )
+        itemlist.append(Item(channel=CHANNELNAME,action="programas",title=">> Página siguiente",url=item.url.replace("page="+current_page,"page="+next_page), folder=True))
 
     return itemlist
 

@@ -126,12 +126,10 @@ def episodios(item):
         if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
         itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle + " " + scrapedplot , action="play" , url=scrapedurl, page = scrapedurl , thumbnail=scrapedthumbnail, plot=scrapedplot , show=item.show , folder=False) )
 
-    patron = '<a href="([^"]+)"  class="enlace siguiente"'
+    patron = '<a href="([^"]+)"\s+class="enlace siguiente"'
     matches = re.compile(patron,re.DOTALL).findall(data)
     if len(matches)>0:
-        logger.info("[rtva.py] Página siguiente: "+matches[0])
-        item = Item(url=matches[0], show=item.show)
-        itemlist.extend(episodios(item))
+        itemlist.append( Item(channel=CHANNELNAME, title=">> Página siguiente" , action="episodios" , url=matches[0], show=item.show) )
 
     return itemlist
 

@@ -46,6 +46,25 @@ def programas(item):
 
     itemlist=[]
 
+    '''
+    <article  about="/la-noche-de-mirtha" typeof="sioc:Item foaf:Document" class="ds-1col node node--temporada-entretenimiento node--promoted view-mode-c13_temporada node--c13-temporada node--temporada-entretenimiento--c13-temporada clearfix">
+        <figure data-desktop="298x168" data-tabletlandscape="298x168" data-tabletportrait="298x168" data-mobilelandscape="298x168" data-mobileportrait="298x168" alt="La noche de Mirtha" data-width="298" data-height="168" data-timestamp="1421945347"  data-uri="public://la_noche_de_mirtha.jpg" class="field field--name-field-image field--type-image field--label-hidden" >
+            <a href="/la-noche-de-mirtha" data-pagetype="temporada_entretenimiento">
+            <noscript>
+            <img src='public://styles/298x168/public/la_noche_de_mirtha.jpg?t=1421945347' width='298' height='168' alt='La noche de Mirtha' />
+            </noscript>
+            </a>
+            <figcaption></figcaption>
+        </figure>
+        <h2><a href="/la-noche-de-mirtha">La noche de Mirtha</a></h2>
+        <div class="field field--name-c13-custom-field-horarios field--type-ds field--label-hidden">
+        <div class="field__items">
+        <div class="field__item even">
+        <p class='horarios'><span class='icon-horarios'></span>Sáb de 22:00hs a 00:15hs</p>
+        </div></div></div>
+    </article>
+    '''
+
     # Descarga la página
     data = scrapertools.cache_page( item.url )
     patron  = '<(article.*?)</article>'
@@ -53,13 +72,13 @@ def programas(item):
 
     for match in matches:
         logger.info("tvalacarta.channels.eltrece programas match="+match)
-        title = scrapertools.find_single_match(match,'figure alt="([^"]+)"')
+        title = scrapertools.find_single_match(match,'<h2><a href="[^"]+">([^<]+)</a></h2>')
         title = scrapertools.htmlclean(title)
 
-        url = scrapertools.find_single_match(match,'article  about="([^"]+)"')
+        url = scrapertools.find_single_match(match,'<h2><a href="([^"]+)">')
         url = urlparse.urljoin(item.url,url)
 
-        thumbnail = scrapertools.find_single_match(match,'data-uri="public\:\/\/([^"]+)"')
+        thumbnail = scrapertools.find_single_match(match,'<img src=\'public\:\/\/([^"]+)"')
         thumbnail = "http://eltrecetv.cdncmd.com/sites/default/files/styles/298x168/public/"+thumbnail
         plot = ""
         if (DEBUG): logger.info("title=["+title+"], url=["+url+"], thumbnail=["+thumbnail+"]")
@@ -82,21 +101,31 @@ def episodios(item):
 
     itemlist = []
 
+    '''
+    <div  about="/la-noche-de-mirtha/programa-38_074529" typeof="sioc:Item foaf:Document" class="ds-1col node node--capitulo-completo view-mode-c13_capitulo_completo node--c13-capitulo-completo node--capitulo-completo--c13-capitulo-completo clearfix">
+    <figure data-desktop="217x122" data-tabletlandscape="217x122" data-tabletportrait="217x122" data-mobilelandscape="217x122" data-mobileportrait="217x122" alt="Programa 38 (10-01-15)" data-width="90" data-height="90" data-timestamp="1421945563"  data-uri="public://2015/01/11/mirthascioli.jpg" class="field field--name-field-images field--type-image field--label-hidden" ><a href="/la-noche-de-mirtha/programa-38_074529" data-pagetype="capitulo_completo"><span class="hasvideo"></span><noscript><img src='public://styles/90x90/public/2015/01/11/mirthascioli.jpg?t=1421945563' width='90' height='90' alt='Programa 38 (10-01-15)' /></noscript></a><figcaption></figcaption></figure>
+    <h2><a data-pagetype="capitulo_completo" href="/la-noche-de-mirtha/programa-38_074529">Programa 38 (10-01-15)</a></h2>
+    <p>Invitados del programa de hoy: Daniel Scioli, Alejandra Maglietti, Facundo...</p></div>
+    '''
     # Descarga la página
     data = scrapertools.cache_page( item.url )
     item.url = urlparse.urljoin( item.url , scrapertools.find_single_match( data , 'href="(/[^\/]+/capitulos-completos)">Cap' ) )
     
     # Busca la opción de "Capítulos completos"
     data = scrapertools.cache_page( item.url )
-    #data = scrapertools.find_single_match(data,'<h1>(.*?)$')
-    patron  = '<(figure.*?)</div>'
-    matches = re.compile(patron,re.DOTALL).findall(data)
+    matches = re.compile('<figure(.*?)</div>',re.DOTALL).findall(data)
 
     for match in matches:
         logger.info("tvalacarta.channels.eltrece programas match="+match)
-        title = scrapertools.find_single_match(match,'figure alt="([^"]+)"')
-        title = scrapertools.htmlclean(title)
+        title = scrapertools.find_single_match(match,'<a data-pagetype="capitulo_completo" href="[^"]+">([^<]+)</a>')
 
+        if title=="":
+            title = scrapertools.find_single_match(match,"<figcaption>([^<]+)</figcaption>")
+
+        if title=="":
+            title = scrapertools.find_single_match(match,'alt="([^"]+)"')
+
+        title = scrapertools.htmlclean(title)
         url = urlparse.urljoin(item.url,scrapertools.find_single_match(match,'a href="([^"]+)"'))
 
         thumbnail = scrapertools.find_single_match(match,'data-uri="public\:\/\/([^"]+)"')

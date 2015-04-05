@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 #------------------------------------------------------------
 # pelisalacarta - XBMC Plugin
-# Canal para http://conectate.gov.ar
+# Canal para Hispan TV
 # creado por rsantaella
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
@@ -21,7 +21,6 @@ __type__ = "generic"
 __title__ = "hispantv"
 __language__ = "ES"
 __creationdate__ = "20121130"
-__vfanart__ = "http://www.dw.de/cssi/dwlogo-print.gif"
 
 DEBUG = config.get_setting("debug")
 
@@ -29,93 +28,89 @@ def isGeneric():
     return True
 
 def mainlist(item):
-    logger.info("[hispantv.py] mainlist")    
-    itemlist = []
+    logger.info("tvalacarta.channels.hispantv mainlist")    
 
-    item.url="http://www.hispantv.es/programs.aspx"
+    return programas(item)
+
+def programas(item):
+    logger.info("tvalacarta.channels.hispantv programas")    
+
+    itemlist = []
+    item.url="http://www.hispantv.com/programas"
     # Descarga la página
     data = scrapertools.cachePage(item.url)
     '''
-    <div class="ProgDiv">
-    <div class="ImageDiv">
-    <img class="Image" alt="iran" src="/images/prog_logos/351010515.jpg"/>
-    </div>
-    <div class="HSpacer"></div>
-    <div class="TextDiv">
-    <div class="TextTitle"><a href="/section.aspx?id=351010515">El Color del Dinero</a></div>
-    <div class="TextBody">
-    Programa que analiza temas económicos, y en especial la crisis económica europea y sus consecuencias en la Unión Europea.
-    </div>
-    </div>
+    <li class="tile col-xs-12 col-sm-3">
+    <div class="inner">
+    <div class="img video">
+    <a href="/showprogram/Al-Andalus/68">
+    <img src="http://217.218.67.243/images/thumbnail/20150215/14434794_l.jpg" alt="Al Ándalus" />
+    </a></div>
+    <div class="desc"><h4><a href="/showprogram/Al-Andalus/68">Al Ándalus</a></h4></div></div></li>
     '''
-    patron  = '<div class="ProgDiv"[^<]+'
-    patron += '<div class="ImageDiv"[^<]+'
-    patron += '<img class="Image" alt="[^"]+" src="([^"]+)"/[^<]+'
-    patron += '</div[^<]+'
-    patron += '<div class="HSpacer"></div[^<]+'
-    patron += '<div class="TextDiv"[^<]+'
-    patron += '<div class="TextTitle"><a href="([^"]+)">([^<]+)</a></div[^<]+'
-    patron += '<div class="TextBody">([^<]+)<'
+    patron  = '<li class="tile[^<]+'
+    patron += '<div class="inner"[^<]+'
+    patron += '<div class="img video"[^<]+'
+    patron += '<a href="([^"]+)"[^<]+'
+    patron += '<img src="([^"]+)" alt="([^"]+)"'
+
     matches = re.compile(patron,re.DOTALL).findall(data)
     
-    for scrapedthumbnail,scrapedurl,scrapedtitle,scrapedplot in matches:
+    for scrapedurl,scrapedthumbnail,scrapedtitle in matches:
         title = scrapertools.htmlclean(scrapedtitle)
         thumbnail = urlparse.urljoin(item.url,scrapedthumbnail)
         url = urlparse.urljoin(item.url,scrapedurl)
-        plot = scrapedplot.strip()
-        itemlist.append( Item(channel=__channel__, action="videos", title=title, url=url, thumbnail=thumbnail,  plot=plot, folder=True))
+        plot = ""
+        itemlist.append( Item(channel=__channel__, action="episodios", title=title, url=url, thumbnail=thumbnail,  plot=plot, viewmode="movie", folder=True))
 
     return itemlist
 
-def videos(item):
-    logger.info("[hispantv.py] episodios")
+def episodios(item):
+    logger.info("tvalacarta.channels.hispantv episodios")
     itemlist = []
 
     # Descarga la página
     data = scrapertools.cachePage(item.url)
-    data = data.replace("\n", " ")
-    data = data.replace("\r", " ")
+
+    promo_url = scrapertools.find_single_match(data,'<a href="([^"]+)" class="btn btn-default" target="_blank">Descargar')
+    if promo_url!="":
+        itemlist.append( Item(channel=__channel__, action="play", server="directo", title="Ver la promo del programa", url=promo_url, thumbnail=item.thumbnail, plot=item.plot, folder=False))
+
     logger.info(data)
     '''
-    <div style="width:100%;float:left;height:20px;"></div></div><div style="width:100%;float:left;border-bottom:solid 1px #dddddd;height:120px;"><div style="width:100%;float:left;height:20px;"></div>
-    <div style="width:100%;float:left;height:80px;"><div style="width:140px;overflow:hidden;float:left;height:80px;">
-    <img alt="CategoryDetail" src="sp_photo/20121202/mrg pregunta.jpg" style="height:80px;width:140px;"/></div><div style="width:20px;overflow:hidden;float:left;height:80px;"></div>
-    <div style="width:470px;text-align:left;overflow:hidden;float:left;height:80px;">
-    <div class="CatPageDetailTitle"><a class="CatPageDetailTitleLink" href="/detail/2012/12/02/203768/una-pregunta-sencilla-actos-patrioticos">Una pregunta sencilla - Actos patrióticos</a></div>
-    <div class="CatPageDetailDetail">Petróleo, preguntas sencillas, muchas respuestas.
-    
-    En este episodio escucharemos las respuestas de las siguientes preguntas:
-    ¿Qué provoca la drásti ...</div><div class="CatPageDetailDate">02/12/2012 05:00 GMT</div></div></div><
+    <li class="tile col-xs-12 col-sm-4">
+    <a href="/showepisode/Al-Natural/68Al-Natural---Ensalada-de-Brocoli,-la-Alfalfa,-coctel-de-Tofu-y-Granada,-colirio-de-Eufrasia-y-Aciano-para-ojos/68">
+    <div class="inner">
+    <div class="img video">
+    <img src="http://217.218.67.243/images/thumbnail/20150305/06360563_xl.jpg" alt="Al Natural - Ensalada de Brócoli, la Alfalfa, cóctel de Tofu y Granada, colirio de Eufrasia y Aciano para ojos" />
     '''
-    patron  = '<img alt="CategoryDetail" src="([^"]+)".*?'
-    patron += '<a class="CatPageDetailTitleLink" href="([^"]+)">([^<]+)</a></div[^<]+'
-    patron += '<div class="CatPageDetailDetail">([^<]+)<'
+    patron  = '<li class="tile[^<]+'
+    patron += '<a href="([^"]+)"[^<]+'
+    patron += '<div class="inner"[^<]+'
+    patron += '<div class="img video"[^<]+'
+    patron += '<img src="([^"]+)" alt="([^"]+)"'
     matches = re.compile(patron,re.DOTALL).findall(data)
 
-    for scrapedthumbnail,scrapedurl,scrapedtitle,scrapedplot in matches:
+    for scrapedurl,scrapedthumbnail,scrapedtitle in matches:
         title = scrapertools.htmlclean(scrapedtitle)
         thumbnail = urlparse.urljoin(item.url,scrapedthumbnail).replace(" ","%20")
         url = urlparse.urljoin(item.url,scrapedurl)
-        plot = scrapedplot.strip()
-        itemlist.append( Item(channel=__channel__, action="play", title=title, url=url, thumbnail=thumbnail, plot=plot, folder=False))
+        plot = ""
+        itemlist.append( Item(channel=__channel__, action="play", server="hispantv", title=title, url=url, thumbnail=thumbnail, plot=plot, folder=False))
         
     return itemlist
 
 def play(item):
-    logger.info("[hispantv.py] play")    
-    data = scrapertools.cachePage(item.url)
-    logger.info(data)
-    itemlist = []
+    logger.info("tvalacarta.channels.hispantv play")
+
+    if item.server=="directo":
+        return [item]
     
-    #videoFile='/video/20121205/Una_pregunta_sencilla_20121205_P12.flv'
-    patron = "videoFile\='([^']+)'"
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    if DEBUG: scrapertools.printMatches(matches)
-    for match in matches:
-        # "rtmp://64.150.186.181/vod playpath=mp4:hispantv/20130627/Recorridos_urbanos_P74_(Asentamientos_ilegales_en_Uruguay)_new.mp4"
-        playpath = match.replace("/video/","mp4:hispantv/")
-        url = "rtmp://64.150.186.181/vod playpath="+playpath
-        itemlist.append( Item(channel=__channel__, action="play",  server="directo",  title=item.title, url=url, folder=False))
+    itemlist = []
+    data = scrapertools.cachePage(item.url)
+    video_url = scrapertools.find_single_match(data,'<a href="([^"]+)" class="btn btn-default" target="_blank">Descargar')
+    if video_url!="":
+        itemlist.append( Item(channel=__channel__, action="play", server="directo", title=item.title, url=video_url, thumbnail=item.thumbnail, plot=item.plot, folder=False))
 
     return itemlist
 

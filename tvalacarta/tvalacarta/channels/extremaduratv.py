@@ -34,15 +34,23 @@ def programas(item):
 
     # Descarga la página
     '''
-    <div class="programa-alacarta">
-    <a href="/alacarta/tv/programas/programas/4432/dehesa-brava" title="Título del enlace">
-    \<img src="http://www.canalextremadura.es/sites/default/files/imagecache/alacarta_listado_programas/logo_28_fuego.jpg" alt="Ver ficha del programa" title="Ver ficha del programa"  class="imagecache imagecache-alacarta_listado_programas imagecache-default imagecache-alacarta_listado_programas_default" width="225" height="140" />
-    \</a>        <div class="titulo"><a href="/alacarta/tv/programas/programas/4432/dehesa-brava" title="Título del enlace">Dehesa Brava</a></div>
+    <div class="views-field views-field-field-programa-a-la-carta">
+    <div class="field-content">
+    <a href="/alacarta/tv/programas/programas/76148/52-minutos" title="Título del enlace"><div class="field-content"><img src="http://www.canalextremadura.es/sites/default/files/styles/alacarta_listado_programas/public/52_minutos_535-290.jpg?itok=E4F3DF9z" width="225" height="140" alt="" /></div></a>    </div>
     </div>
+    <div class="views-field views-field-title">
+    <div class="field-content">
+    <a href="/alacarta/tv/programas/programas/76148/52-minutos" title="Título del enlace">52 minutos</a>    </div>
     '''
     data = scrapertools.cachePage(item.url)
-    patron  = '<div class="programa-alacarta">[^<]+'
-    patron += '<a href="([^"]+)"[^<]+<img src="([^"]+)"[^<]+</a>[^<]+<div class="titulo"><a[^>]+>([^<]+)</a></div>'
+    patron  = '<div class="views-field views-field-field-programa-a-la-carta"[^<]+'
+    patron += '<div class="field-content"[^<]+'
+    patron += '<a href="([^"]+)"[^<]+<div class="field-content"><img src="([^"]+)"[^<]+</div></a[^<]+</div[^<]+'
+    patron += '</div[^<]+'
+    patron += '<div class="views-field views-field-title"[^<]+'
+    patron += '<div class="field-content"[^<]+'
+    patron += '<a[^>]+>([^<]+)</a>'
+
     matches = re.findall(patron,data,re.DOTALL)
 
     for url,thumbnail,titulo in matches:
@@ -62,18 +70,31 @@ def archivo(item):
 
     # Descarga la página
     '''
-    <div class="programa-alacarta">
-    <a href="/alacarta/tv/programas/programas/1934/extremadura-desde-el-aire" title="Título del enlace">
-    \<a href="/tv/cultura/extremadura-desde-el-aire" class="imagecache imagecache-alacarta_categorias_programas_archivo imagecache-linked imagecache-alacarta_categorias_programas_archivo_linked">
-    \<img src="http://www.canalextremadura.es/sites/default/files/imagecache/alacarta_categorias_programas_archivo/extremadura_desde_el_aire_.jpg" as_programas_archivo" width="75" height="46" />
-    \</a></a>        <div class="titulo"><a href="/alacarta/tv/programas/programas/1934/extremadura-desde-el-aire" title="Título del enlace">Extremadura desde el Aire</a></div>
+    <div class="views-field views-field-field-programa-a-la-carta col-xs-7">
+    <div class="field-content">
+    <a href="/alacarta/tv/programas/programas/1027/castillos-de-extremadura" title="Título del enlace">
+    <div class="field-content">
+    <a href="/tv/programas/castillos-de-extremadura">
+    <img src="http://www.canalextremadura.es/sites/default/files/styles/alacarta_categorias_programas_archivo/public/foto_cabecera.jpg?itok=OMC1fjc4" width="75" height="46" alt="Ver ficha del programa" title="Ver ficha del programa" />
+    </a></div></a>        </div>
+    </div>
+    <div class="views-field views-field-title col-xs-17">
+    <div class="field-content">
+    <a href="/alacarta/tv/programas/programas/1027/castillos-de-extremadura" title="Título del enlace">Castillos de Extremadura</a>        </div>
     '''
     data = scrapertools.cachePage(item.url)
-    patron  = '<div class="programa-alacarta">[^<]+'
+    patron  = '<div class="views-field views-field-field-programa-a-la-carta[^<]+'
+    patron += '<div class="field-content"[^<]+'
     patron += '<a href="([^"]+)"[^<]+'
+    patron += '<div class="field-content"[^<]+'
     patron += '<a[^<]+'
     patron += '<img src="([^"]+)"[^<]+'
-    patron += '</a></a>[^<]+<div class="titulo"><a[^>]+>([^<]+)</a></div>'
+    patron += '</a></div></a[^<]+</div[^<]+'
+    patron += '</div[^<]+'
+    patron += '<div class="views-field views-field-title[^<]+'
+    patron += '<div class="field-content"[^<]+'
+    patron += '<a[^>]+>([^<]+)</a>'
+
     matches = re.findall(patron,data,re.DOTALL)
 
     for url,thumbnail,titulo in matches:
@@ -94,98 +115,37 @@ def episodios(item):
     # Descarga la página
     data = scrapertools.cachePage(item.url)
 
-    # Si hay algo en el contenedor izquierdo
-    try:
-        titulo_bloque_izquierdo = scrapertools.get_match(data,'<div class="videos-izq"><p>([^<]+)</p>')
-        itemlist.append( Item(channel=CHANNELNAME, title=titulo_bloque_izquierdo , action="episodios_bloque_izquierdo", url=item.url, show=item.show, folder=True) )
-        logger.info("extremaduratv.episodios SI encontrado bloque izquierdo")
-    except:
-        logger.info("extremaduratv.episodios NO encontrado bloque izquierdo")
-
-    try:
-        titulo_bloque_izquierdo = scrapertools.get_match(data,'<div class="videos-der"><p>([^<]+)</p>')
-        itemlist.append( Item(channel=CHANNELNAME, title=titulo_bloque_izquierdo , action="episodios_bloque_derecho", url=item.url, show=item.show, folder=True) )
-        logger.info("extremaduratv.episodios SI encontrado bloque derecho")
-    except:
-        logger.info("extremaduratv.episodios NO encontrado bloque derecho")
-
-    return itemlist
-
-def episodios_bloque_izquierdo(item):
-    logger.info("extremaduratv.episodios_bloque_izquierdo")
-    itemlist = []
-
-    # Descarga la página
-    data = scrapertools.cachePage(item.url)
-    data = scrapertools.get_match(data,'<div class="contenedor-izq">(.*?)<div class="contenedor-der">')
-
-    patron  = '<li[^<]+'
-    patron += '<div class="views-field-view-node"[^<]+'
-    patron += '<a href="([^"]+)">Ver video</a[^<]+</div[^<]+'
-    patron += '<div class="views-field-title"[^<]+'
-    patron += '<a href="[^"]+">([^<]+)</a>'
+    '''
+    <a href="/alacarta/tv/videos/trastos-y-tesoros-260315">
+    <img src="http://www.canalextremadura.es/sites/default/files/styles/alacarta_listado_programas/public/cadillac.jpg?itok=cAhwJKrp" width="225" height="140" alt="" />
+    </a></div>  </div>  
+    <div class="views-field views-field-title">        
+    <span class="field-content">Trastos y tesoros (26/03/15)</span>
+    '''
+    patron  = '<a href="([^"]+)"[^<]+'
+    patron += '<img src="([^"]+)"[^<]+'
+    patron += '</a></div[^<]+</div[^<]+'
+    patron += '<div class="views-field views-field-title"[^<]+'
+    patron += '<span class="field-content">([^<]+)</span>'
 
     matches = re.findall(patron,data,re.DOTALL)
 
-    for url,titulo in matches:
+    for url,thumbnail,titulo in matches:
         scrapedtitle = titulo.strip()
         scrapedurl = urlparse.urljoin(item.url,url)
-        scrapedthumbnail = ""
+        scrapedthumbnail = thumbnail
         scrapedplot = ""
         if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
 
         itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="play" , server="extremaduratv" , url=scrapedurl, thumbnail = scrapedthumbnail, show=item.show, folder=False) )
 
     #<li class="pager-next last"><a href="/alacarta/tv/programas/informativos/97/extremadura-noticias-1?page=1" 
-    patron = '<li class="pager-next[^<]+<a href="([^"]+)"'
+    patron = 'href="([^"]+)">siguiente'
     matches = re.findall(patron,data,re.DOTALL)
 
     for url in matches:
         scrapedurl = urlparse.urljoin(item.url,url)
-        itemlist.append( Item(channel=CHANNELNAME, title=">> Página siguiente" , action="episodios_bloque_izquierdo" , url=scrapedurl, show=item.show) )
-
-    return itemlist
-
-def episodios_bloque_derecho(item):
-    logger.info("extremaduratv.episodios_bloque_derecho")
-    itemlist = []
-
-    # Descarga la página
-    data = scrapertools.cachePage(item.url)
-
-    '''
-    <div class="contenedor-izq">
-    <a href="/tv/informativos/extremadura-noticias-1" class="imagecache imagecache-programa_contenedor_alacarta imagecache-linked imagecache-programa_contenedor_alacarta_linked">
-    <img src="http://www.canalextremadura.es/sites/default/files/imagecache/programa_contenedor_alacarta/extremaduranoticas_nuevo1_319.jpg" alt="Ver ficha del programa" title="Ver ficha del programa"  class="imagecache imagecache-programa_contenedor_alacarta" width="200" height="110" /></a>
-    
-    <div class="views_view view view-Mas-videos view-id-Mas_videos view-display-id-block_7 view-dom-id-2">
-    <ul>
-    <li >    
-    '''
-
-    patron  = '<div class="views-field-field-video-imagen-fid[^>]+>[^<]+'
-    patron += '<a href="([^"]+)"[^<]+'
-    patron += '<img src="([^"]+)"[^<]+'
-    patron += '</a>\s*<span class="video">video</span>[^<]+</div>[^<]+'
-    patron += '<div class="views-field-title[^>]+>([^<]+)</div>'
-    matches = re.findall(patron,data,re.DOTALL)
-
-    for url,thumbnail,titulo in matches:
-        scrapedtitle = titulo.strip()
-        scrapedurl = urlparse.urljoin(item.url,url)
-        scrapedthumbnail = urlparse.urljoin(item.url,thumbnail)
-        scrapedplot = ""
-        if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
-
-        itemlist.append( Item(channel=CHANNELNAME, title=scrapedtitle , action="play" , server="extremaduratv" , url=scrapedurl, thumbnail = scrapedthumbnail, show=item.show, folder=False) )
-
-    #<li class="pager-next"><a href="/alacarta/tv/programas/informativos/65666/dossier-informativo?page=1" title="Go to next page" class="active">next ›</a></li>
-    patron = '<li class="pager-next"><a href="([^"]+)"'
-    matches = re.findall(patron,data,re.DOTALL)
-
-    for url in matches:
-        scrapedurl = urlparse.urljoin(item.url,url)
-        itemlist.append( Item(channel=CHANNELNAME, title=">> Página siguiente" , action="episodios_bloque_derecho" , url=scrapedurl, show=item.show) )
+        itemlist.append( Item(channel=CHANNELNAME, title=">> Página siguiente" , action="episodios" , url=scrapedurl, show=item.show) )
 
     return itemlist
 

@@ -54,8 +54,11 @@ def run():
             except ImportError:
                 logger.info("[launcher.py] Actualizacion automática desactivada")
 
-            import channelselector as plugin
-            plugin.listchannels(params, url, category)
+            #import channelselector as plugin
+            #plugin.listchannels(params, url, category)
+            if config.get_system_platform()!="xbox":
+                import xbmc
+                xbmc.executebuiltin( "Container.Refresh" )
 
         elif (action=="channeltypes"):
             import channelselector as plugin
@@ -539,6 +542,10 @@ def download_all_episodes(item,channel,first_episode="", silent=False):
             episode_title = scrapertools.get_match(episode_item.title,"(\d+x\d+)")
         except:
             episode_title = episode_item.title
+
+        if item.channel=="rtve":
+            episode_title = re.compile("\(.*?\)",re.DOTALL).sub("",episode_title).strip()
+
         logger.info("[launcher.py] download_all_episodes, episode="+episode_title)
 
         if first_episode!="" and episode_title==first_episode:

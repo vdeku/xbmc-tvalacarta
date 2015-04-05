@@ -21,11 +21,12 @@ def isGeneric():
 def mainlist(item):
     logger.info("tvalacarta.channels.boing mainlist")
 
-    itemlist = []
-    itemlist.append( Item(channel=CHANNELNAME, title="Últimos vídeos añadidos" , url="http://www.boing.es/videos" , action="episodios" , folder=True) )
-    itemlist.append( Item(channel=CHANNELNAME, title="Todas las series" , url="http://www.boing.es/series?order=title&sort=asc" , action="series" , folder=True) )
+    #itemlist = []
+    #itemlist.append( Item(channel=CHANNELNAME, title="Últimos vídeos añadidos" , url="http://www.boing.es/videos" , action="episodios" , folder=True) )
+    #itemlist.append( Item(channel=CHANNELNAME, title="Todas las series" , url="http://www.boing.es/series?order=title&sort=asc" , action="series" , folder=True) )
 
-    return itemlist
+    item.url = "http://www.boing.es/videos"
+    return episodios(item)
 
 def series(item):
     logger.info("tvalacarta.channels.boing series")
@@ -97,70 +98,29 @@ def episodios(item):
 
     # Extrae los videos
     '''
-    <div class="pic"><div class="pic2"><div class="pic3">    
-    <a href="/serie/geronimo-stilton/video/top-model">
-    <img class="bcvid" height="73" width="130" src="http://i.cdn.turner.com/tbseurope/big/Boing_ES/thumbs/SP_SA_GERSTI0017_01.jpg" />
-    </a>
-    </div></div></div>
-    <div class="series"><a href="/serie/geronimo-stilton">Gerónimo Stilton</a></div>
-    <div class="title"><a href="/serie/geronimo-stilton/video/top-model">Top Model</a></div>
-    '''
-    '''
     <div class="pic"><div class="pic2"><div class="pic3">
-    
-    <a href="/serie/generator-rex/video/hombre-contra-hombre">
-    <img style="margin-top:10px" height="73" width="130" src="http://i.cdn.turner.com/tbseurope/big/Boing_ES_16_9/thumbs/SP_SA_GENREX0047_01.jpg" />
-    </a>
-    
-    
+    <a href="/serie/ninjago-maestros-del-spinjitzu/video/el-que-es-mordido-esta-en-peligro" class="imagecache imagecache-130x73 imagecache-linked imagecache-130x73_linked"><img src="http://www.boing.es/sites/default/files/imagecache/130x73/once_bitten.jpg" alt="" title=""  class="imagecache imagecache-130x73" width="130" height="73" /></a>                       
     </div></div></div>
-    <div class="stars"><form action="/videos/generator-rex"  accept-charset="UTF-8" method="post" id="fivestar-custom-widget" class="fivestar-widget">
-    <div><div class="fivestar-form-vote-18249 clear-block"><input type="hidden" name="content_type" id="edit-content-type" value="node"  />
-    <input type="hidden" name="content_id" id="edit-content-id" value="18249"  />
+    <div class="stars"><form action="/videos"  accept-charset="UTF-8" method="post" id="fivestar-custom-widget" class="fivestar-widget">
+    <div><div class="fivestar-form-vote-102378 clear-block"><input type="hidden" name="content_type" id="edit-content-type" value="node"  />
+    <input type="hidden" name="content_id" id="edit-content-id" value="102378"  />
     <div class="fivestar-form-item  fivestar-average-stars"><div class="form-item" id="edit-vote-wrapper">
-    <span class='edit-vote-design'><span class='form-item-value-design1'><span class='form-item-value-design2'><span class='form-item-value-design3'> <input type="hidden" name="vote_count" id="edit-vote-count" value="0"  />
-    <input type="hidden" name="vote_average" id="edit-vote-average" value="76.25"  />
-    <input type="hidden" name="auto_submit_path" id="edit-auto-submit-path" value="/fivestar/vote/node/18249/vote"  class="fivestar-path" />
-    <select name="vote" class="form-select" id="edit-vote-1" ><option value="-">Select rating</option><option value="20">Give it 1/5</option><option value="40">Give it 2/5</option><option value="60">Give it 3/5</option><option value="80" selected="selected">Give it 4/5</option><option value="100">Give it 5/5</option></select><input type="hidden" name="auto_submit_token" id="edit-auto-submit-token" value="36639bc15e086e0bfc3d93bfec3d5287"  class="fivestar-token" />
-    
-    </span></span></span></span></div>
-    </div><input type="hidden" name="destination" id="edit-destination" value="videos/generator-rex"  />
+    <input type="hidden" name="vote_count" id="edit-vote-count" value="0"  />
+    <input type="hidden" name="vote_average" id="edit-vote-average" value="88.5714"  />
+    <input type="hidden" name="auto_submit_path" id="edit-auto-submit-path" value="/fivestar/vote/node/102378/vote"  class="fivestar-path" />
+    <select name="vote" class="form-select" id="edit-vote-1" ><option value="-">Select rating</option><option value="20">Give it 1/5</option><option value="40">Give it 2/5</option><option value="60">Give it 3/5</option><option value="80">Give it 4/5</option><option value="100" selected="selected">Give it 5/5</option></select><input type="hidden" name="auto_submit_token" id="edit-auto-submit-token" value="b8a094b5f4a56d752822bb55d0f3b99c"  class="fivestar-token" />
+    </div>
+    </div><input type="hidden" name="destination" id="edit-destination" value="videos"  />
     <input type="submit" name="op" id="edit-fivestar-submit" value="Rate"  class="form-submit fivestar-submit" />
-    <input type="hidden" name="form_build_id" id="form-d62c4ce5673f9173ca3edb7e81986457" value="form-d62c4ce5673f9173ca3edb7e81986457"  />
+    <input type="hidden" name="form_build_id" id="form-NGhpOchfYw6teS0LnyS0m4aGdHV0zd6oTgcFnHXdKwY" value="form-NGhpOchfYw6teS0LnyS0m4aGdHV0zd6oTgcFnHXdKwY"  />
     <input type="hidden" name="form_id" id="edit-fivestar-custom-widget" value="fivestar_custom_widget"  />
     </div>
     </div></form></div>
-    <div class="series"><a href="/serie/generator-rex">Generator Rex</a></div>
-    <div class="title"><a href="/serie/generator-rex/video/hombre-contra-hombre">Hombre contra hombre</a></div>
-    '''
-    '''
-    <div class="pic3">
-    
-    <a href="/serie/monster-high/video/monster-high-superpillada" class="imagecache imagecache-130x73 imagecache-linked imagecache-130x73_linked"><img src="http://www.boing.es/sites/default/files/imagecache/130x73/pantallazo2mh.jpg" alt="" title=""  class="imagecache imagecache-130x73" width="130" height="73" /></a>                       
-    
-    </div></div></div>
-    <div class="stars"><form action="/videos/monster-high"  accept-charset="UTF-8" method="post" id="fivestar-custom-widget" class="fivestar-widget">
-    <div><div class="fivestar-form-vote-24388 clear-block"><input type="hidden" name="content_type" id="edit-content-type" value="node"  />
-    <input type="hidden" name="content_id" id="edit-content-id" value="24388"  />
-    <div class="fivestar-form-item  fivestar-average-stars"><div class="form-item" id="edit-vote-wrapper">
-    <span class='edit-vote-design'><span class='form-item-value-design1'><span class='form-item-value-design2'><span class='form-item-value-design3'> <input type="hidden" name="vote_count" id="edit-vote-count" value="0"  />
-    <input type="hidden" name="vote_average" id="edit-vote-average" value="67.9646"  />
-    <input type="hidden" name="auto_submit_path" id="edit-auto-submit-path" value="/fivestar/vote/node/24388/vote"  class="fivestar-path" />
-    <select name="vote" class="form-select" id="edit-vote-1" ><option value="-">Select rating</option><option value="20">Give it 1/5</option><option value="40">Give it 2/5</option><option value="60">Give it 3/5</option><option value="80" selected="selected">Give it 4/5</option><option value="100">Give it 5/5</option></select><input type="hidden" name="auto_submit_token" id="edit-auto-submit-token" value="219ac03ae7ca6956d5484acb00454195"  class="fivestar-token" />
-    
-    </span></span></span></span></div>
-    </div><input type="hidden" name="destination" id="edit-destination" value="videos/monster-high"  />
-    <input type="submit" name="op" id="edit-fivestar-submit" value="Rate"  class="form-submit fivestar-submit" />
-    <input type="hidden" name="form_build_id" id="form-9e308b4823178e9cbca63316130d805e" value="form-9e308b4823178e9cbca63316130d805e"  />
-    <input type="hidden" name="form_id" id="edit-fivestar-custom-widget" value="fivestar_custom_widget"  />
-    </div>
-    </div></form></div>
-    <div class="series"><a href="/serie/monster-high">Monster High</a></div>
-    <div class="title"><a href="/serie/monster-high/video/monster-high-superpillada">Monster High: Superpillada</a></div>
-    
+    <div class="series"><a href="/serie/ninjago-maestros-del-spinjitzu">Ninjago: maestros del Spinjitzu</a></div>
+    <div class="title"><a href="/serie/ninjago-maestros-del-spinjitzu/video/el-que-es-mordido-esta-en-peligro">El que es mordido, está en peligro</a></div>
     '''
     patron  = '<div class="pic3"[^<]+'
-    patron += '<a href="([^"]+)"[^<]+<img style="[^"]+" height="\d+" width="\d+" src="([^"]+)".*?'
+    patron += '<a href="([^"]+)"[^<]+<img.*?src="([^"]+)".*?'
     patron += '<div class="series">(.*?)</div[^<]+'
     patron += '<div class="title"><a[^>]+>([^<]+)</a>'
     matches = re.compile(patron,re.DOTALL).findall(bloque)

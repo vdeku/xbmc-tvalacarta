@@ -73,26 +73,29 @@ def videos(item):
     logger.info("tvalacarta.telefe videos")
 
     '''
-    <div id='123862' class='large-4 small-12 column'>
+    <div id='307218' class='large-4 small-12 column'>
     <div class='row'>
     <div class='b_search__result_item'>
-    <a href='http://telefe.com/avenida-brasil/avenida-brasil-capitulo-75-(28-03-2014)/'>
+    <a href='http://telefe.com/viudas-e-hijos-del-rock-roll/viudas-e-hijos-del-rock-roll-capitulo-123-(26-03-2015)/'>
     <div class='small-12 columns'>
     <div class='img-overlay-back'>
     <div class='badge-over-photo'>
-    <img src='http://d1gk8v3tl0wzmi.cloudfront.net/media/9111735/avenida-28-3-9-_main.jpg' style='border-color: AB9527'/>
+    <img src='http://static.cdn.telefe.com/media/15220361/ortega-viudas_main.jpg?v=20150331124047000' style='border-color:#FF0810'/>
     <div class='badge-ribbon'>
-    <div class='badge' style='background-color:AB9527; color: white'>
-    <p>Avenida Brasil</p>
+    <div class='badge' style='background-color:#FF0810; color: white'>
+    <p>Viudas e Hijos del Rock &amp; Roll</p>
     </div>
     </div>
     </div>
     </div>
     </div>
     <div class='small-12 columns'>
-    <h5>Avenida Brasil - Cap&#237;tulo 75 (28-03-2014)</h5>
-    <p><b class='strong color-red'>Emitido el 28 de marzo de 2014</b></p>
-    <p>A pedido de Carmina, Max secuestra a Nina y la lleva a alta mar en su yate.</p>
+    <h5>Viudas e Hijos del Rock &amp; Roll - Cap&#237;tulo 123 (26-03-2015)</h5>
+    <p>
+    <span class='color-gray'>Emitido el 26 de marzo de 2015</span>
+
+    </p>
+    <p>Sandra admite qui&#233;n es el padre de su hijo.</p>
     </div>
     </a>
     </div>
@@ -126,7 +129,7 @@ def videos(item):
     patron += "</div[^<]+"
     patron += "<div class='small-12 columns'[^<]+"
     patron += "<h5>([^<]+)</h5[^<]+"
-    patron += "<p><b[^<]+</b></p[^<]+"
+    patron += "<p[^<]+<span[^<]+</span[^<]+</p[^<]+"
     patron += "<p>([^<]+)</p>"
 
     matches = re.compile(patron,re.DOTALL).findall(data)

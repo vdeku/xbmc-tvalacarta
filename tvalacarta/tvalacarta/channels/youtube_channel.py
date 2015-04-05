@@ -6,10 +6,7 @@
 #------------------------------------------------------------
 import os
 import sys
-
-import urlparse,re
-import urllib
-import datetime
+import re
 
 from core import logger
 from core import scrapertools
@@ -48,6 +45,10 @@ def playlists(item,channel_id):
         # Appends a new item to the xbmc item list
         itemlist.append( Item(channel=CHANNELNAME, title=title , action="videos" , url=url, thumbnail=thumbnail, plot=plot , folder=True) )
     return itemlist
+
+def latest_videos(item,channel_id):
+    item.url = "http://gdata.youtube.com/feeds/api/users/"+channel_id+"/uploads?v=2&start-index=1&max-results=30"
+    return videos(item)
 
 # Show all YouTube videos for the selected playlist
 def videos(item):

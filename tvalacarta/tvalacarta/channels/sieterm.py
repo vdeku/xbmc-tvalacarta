@@ -16,6 +16,7 @@ logger.info("tvalacarta.channels.sieterm init")
 
 DEBUG = False
 CHANNELNAME = "sieterm"
+MAIN_URL = "http://www.7rm.es/servlet/rtrm.servlets.ServletLink2?METHOD=LSTBLOGALACARTA&sit=c,6&serv=BlogPortal2&orden=2"
 
 def isGeneric():
     return True
@@ -25,7 +26,7 @@ def mainlist(item):
 
     itemlist = []
     #itemlist.append( Item(channel=CHANNELNAME, title="Últimos vídeos añadidos" , url="" , action="novedades" , folder=True) )
-    itemlist.append( Item(channel=CHANNELNAME, title="Todos los programas" , url="http://www.7rm.es/servlet/rtrm.servlets.ServletLink2?METHOD=LSTBLOGALACARTA&sit=c,6&serv=BlogPortal2&orden=2" , action="programas" , folder=True) )
+    itemlist.append( Item(channel=CHANNELNAME, title="Todos los programas" , url=MAIN_URL , action="programas" , folder=True) )
 
     return itemlist
 
@@ -33,6 +34,9 @@ def programas(item):
     logger.info("tvalacarta.channels.sieterm programas")
 
     itemlist = []
+    if item.url=="":
+        item.url = MAIN_URL
+
     data = scrapertools.cachePage(item.url)
     
     # Extrae las entradas (carpetas)
