@@ -143,11 +143,11 @@ def fanart(item):
             show=  item.thumbnail
             plot = item.plot
             category= ""
-            itemlist.append( Item(channel=__channel__, title=item.title, url=item.url, action="findvideos", thumbnail=item.thumbnail, fanart=item.thumbnail ,extra=extra, category= category, plot= plot, show=show , folder=True) )
+            itemlist.append( Item(channel=__channel__, title=item.title, url=item.url, action="findvideos", thumbnail=item.thumbnail, fanart=item.thumbnail ,extra=extra, category= category,  show=show , folder=True) )
         else:
             #fanart
             for id in matches:
-                plot = id
+                category = id
                 id_serie = id
                 url ="http://thetvdb.com/api/1D62F2F90030C444/series/"+id_serie+"/banners.xml"
                 if "Castle" in title:
@@ -159,8 +159,7 @@ def fanart(item):
                 if len(matches)==0:
                     extra=item.thumbnail
                     show= item.thumbnail
-                    category = ""
-                    itemlist.append( Item(channel=__channel__, title=item.title, url=item.url, action="findvideos", thumbnail=item.thumbnail, fanart=item.thumbnail ,category = category, plot= plot, extra=extra, show=show, folder=True) )
+                    itemlist.append( Item(channel=__channel__, title=item.title, url=item.url, action="findvideos", thumbnail=item.thumbnail, fanart=item.thumbnail ,category = category, extra=extra, show=show, folder=True) )
 
             for fan in matches:
                 fanart="http://thetvdb.com/banners/" + fan
@@ -192,13 +191,11 @@ def fanart(item):
                                  thumbnail = hdtvlogo
                                  extra=  hdtvclear
                                  show = fanart_2
-                                 category=""
                             else:
                                  thumbnail = hdtvlogo
                                  extra= thumbnail
                                  show = fanart_2
-                                 category= ""
-                            itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, fanart=item.extra, category=category, extra=extra, show=show, plot= plot, folder=True) )
+                            itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, fanart=item.extra, category=category, extra=extra, show=show, folder=True) )
                                 
     
                         else:
@@ -206,19 +203,16 @@ def fanart(item):
                                 thumbnail= hdtvlogo
                                 extra= hdtvclear
                                 show= item.extra
-                                category= ""
                             else:
                                 thumbnail= hdtvlogo
                                 extra= thumbnail
                                 show= item.extra
-                                category = ""
                             
-                            itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, fanart=item.extra, extra=extra, show=show, plot= plot, category= category, folder=True) )
+                            itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, fanart=item.extra, extra=extra, show=show,  category= category, folder=True) )
                     else:
                         extra=  item.thumbnail
                         show = item.extra
-                        category = ""
-                        itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=item.thumbnail, fanart=item.extra, extra=extra, show=show, plot= plot, category = category, folder=True) )
+                        itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=item.thumbnail, fanart=item.extra, extra=extra, show=show, category = category, folder=True) )
                 
             for logo in matches:
                 if '"hdtvlogo"' in data:
@@ -234,13 +228,11 @@ def fanart(item):
                         fanart_2=scrapertools.get_match(data,'"showbackground":.*?"url": "([^"]+)"')
                         extra=clear
                         show= fanart_2
-                        category = ""
-                        itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, plot= plot, fanart=item.extra, extra=extra,show=show, category= category,  folder=True) )
+                        itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, fanart=item.extra, extra=extra,show=show, category= category,  folder=True) )
                     else:
                          extra= clear
                          show=item.extra
-                         category =""
-                         itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, fanart=item.extra, extra=extra,show=show, plot= plot, category= category, folder=True) )
+                         itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, fanart=item.extra, extra=extra,show=show, category= category, folder=True) )
                 
                 if "showbackground" in data:
                     fanart_2=scrapertools.get_match(data,'"showbackground":.*?"url": "([^"]+)"')
@@ -248,23 +240,19 @@ def fanart(item):
                         clear=scrapertools.get_match(data,'"clearart":.*?"url": "([^"]+)"')
                         extra=clear
                         show= fanart_2
-                        category=""
                     else:
                         extra=logo
                         show= fanart_2
-                        category= ""
-                        itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, fanart=item.extra, extra=extra,show=show, plot= plot, category = category, folder=True) )
+                        itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, fanart=item.extra, extra=extra,show=show,  category = category, folder=True) )
 
                 if not '"clearart"' in data and not '"showbackground"' in data:
                         if '"hdclearart"' in data:
                             extra= hdtvclear
                             show= item.extra
-                            category = ""
                         else:
                             extra= thumbnail
                             show=  item.extra
-                            category =""
-                        itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, fanart=item.extra, extra=extra,show=show , plot= plot, category = category, folder=True) )
+                        itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, fanart=item.extra, extra=extra,show=show , category = category, folder=True) )
                 
     else:
             title= scrapertools.get_match(data,'<title>(.*?)Torrent')
@@ -284,8 +272,8 @@ def fanart(item):
             if len(matches)==0:
                 extra=item.thumbnail
                 show= item.thumbnail
-                plot= item.thumbnail
-                itemlist.append( Item(channel=__channel__, title=item.title, url=item.url, action="findvideos_peli", thumbnail=item.thumbnail, fanart=item.thumbnail ,extra=extra, show=show, plot= plot, folder=True) )
+                category= item.thumbnail
+                itemlist.append( Item(channel=__channel__, title=item.title, url=item.url, action="findvideos_peli", thumbnail=item.thumbnail, fanart=item.thumbnail ,extra=extra, show=show, category= category, folder=True) )
             
             else:
                 for fan, id in matches:
@@ -310,8 +298,8 @@ def fanart(item):
                     if len(matches)==0:
                        extra=  item.thumbnail
                        show = item.extra
-                       plot = item.extra
-                       itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos_peli", url=item.url, server="torrent", thumbnail=item.thumbnail, fanart=item.extra, extra=extra, show=show, folder=True) )
+                       category = item.extra
+                       itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos_peli", url=item.url, server="torrent", thumbnail=item.thumbnail, fanart=item.extra,  extra=extra, show=show, category= category, folder=True) )
                 for logo in matches:
                     if '"hdmovieclearart"' in data:
                          clear=scrapertools.get_match(data,'"hdmovieclearart":.*?"url": "([^"]+)"')
@@ -320,18 +308,18 @@ def fanart(item):
                              extra=clear
                              show= fanart_2
                              if '"moviebanner"' in data:
-                                  plot= banner
+                                  category= banner
                              else:
-                                  plot= clear
-                             itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos_peli", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra, extra=extra,show=show, plot=plot ,folder=True) )
+                                  category= clear
+                             itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos_peli", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra, extra=extra,show=show, category= category, folder=True) )
                          else:
                              extra= clear
                              show=item.extra
                              if '"moviebanner"' in data:
-                                 plot= banner
+                                 category = banner
                              else:
-                                 plot= clear
-                             itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos_peli", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra, extra=extra,show=show, plot= plot, folder=True) )
+                                 category = clear
+                             itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos_peli", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra, extra=extra,show=show, category= category, folder=True) )
 
                     if '"moviebackground"' in data:
                         fanart_2=scrapertools.get_match(data,'"moviebackground":.*?"url": "([^"]+)"')
@@ -340,27 +328,27 @@ def fanart(item):
                             extra=clear
                             show= fanart_2
                             if '"moviebanner"' in data:
-                                plot= banner
+                                category= banner
                             else:
-                                plot= clear
+                                category= clear
                     
                         else:
                             extra=logo
                             show= fanart_2
                             if '"moviebanner"' in data:
-                                plot= banner
+                                category= banner
                             else:
-                                plot= logo
-                            itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos_peli", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra, extra=extra,show=show, plot=plot,  folder=True) )
+                                category= logo
+                            itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos_peli", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra, extra=extra,show=show, category= category,  folder=True) )
         
                     if not '"hdmovieclearart"' in data and not '"moviebackground"' in data:
                             extra= logo
                             show=  item.extra
                             if '"moviebanner"' in data:
-                                plot= banner
+                                category= banner
                             else:
-                                plot= item.extra
-                            itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos_peli", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra,plot= plot, extra=extra,show=show ,  folder=True) )
+                                category= item.extra
+                            itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos_peli", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra,category= category, extra=extra,show=show ,  folder=True) )
     
     title ="Info"
     title = title.replace(title,"[COLOR skyblue]"+title+"[/COLOR]")
@@ -375,12 +363,13 @@ def fanart(item):
           thumbnail= tvposter
     else:
         thumbnail = item.thumbnail
-    if "tvbanner" in data:
-        category = tvbanner
-    else:
-        category = show
+    if "temporada" in item.url:
+        if "tvbanner" in data:
+            category = tvbanner
+        else:
+            category = show
 
-    itemlist.append( Item(channel=__channel__, action="info" , title=title , url=item.url, thumbnail=thumbnail, fanart=fanart, show= show, extra= extra, plot= plot, category= category, folder=False ))
+    itemlist.append( Item(channel=__channel__, action="info" , title=title , url=item.url, thumbnail=thumbnail, fanart=fanart, show= show, extra= extra, category= category, folder=False ))
     title= "[COLOR crimson]Trailer[/COLOR]"
     if len(item.extra)==0:
        fanart=item.thumbnail
@@ -479,7 +468,7 @@ def findvideos(item):
         title_links= title_links.replace('ú','u')
         title_links= title_links.replace(' ','%20')
         extra = season+"|"+title_links+"|"+epi
-        itemlist.append( Item(channel=__channel__, title = title_torrent , action="episodios", url=url_torrent, thumbnail=item.extra, fanart=item.show, extra=extra, plot= item.plot, folder=True) )
+        itemlist.append( Item(channel=__channel__, title = title_torrent , action="episodios", url=url_torrent, thumbnail=item.extra, fanart=item.show, extra=extra, category= item.category, folder=True) )
     
     return itemlist
 
@@ -528,10 +517,12 @@ def episodios(item):
         for foto in matches:
             thumbnail = "https://image.tmdb.org/t/p/original" + foto
             
-            itemlist.append( Item(channel=__channel__, title = title , action="play", url=item.url, server="torrent", thumbnail=thumbnail, fanart=fanart,  plot = item.plot, folder=False) )
+            
+            itemlist.append( Item(channel=__channel__, title = title , action="play", url=item.url, server="torrent", thumbnail=thumbnail, fanart=fanart,  category = item.category, folder=False) )
+    show = item.category+"|"+item.thumbnail+"|"+id
     title ="Info"
     title = title.replace(title,"[COLOR skyblue]"+title+"[/COLOR]")
-    itemlist.append( Item(channel=__channel__, action="info_capitulos" , title=title , url=item.url, thumbnail=thumbnail, fanart=fanart, extra = item.extra, plot= item.plot, show = id, category= item.thumbnail,folder=False ))
+    itemlist.append( Item(channel=__channel__, action="info_capitulos" , title=title , url=item.url, thumbnail=thumbnail, fanart=fanart, extra = item.extra, show = show, folder=False ))
 
     return itemlist
 
@@ -557,6 +548,7 @@ def findvideos_peli(item):
         title_torrent = "["+title_torrent.replace("file","torrent")+"]"
         title_torrent = title_torrent.replace(title_torrent,"[COLOR green]"+title_torrent+"[/COLOR]")
         title_links = title_links.replace(title_links,"[COLOR sandybrown]"+title_links+"[/COLOR]")
+        title_links = re.sub(r"&#.*?;","",title_links)
         title_tag="[COLOR yellow]Ver --[/COLOR]"
         title_torrent = title_tag+title_links+"- "+title_torrent
         url_torrent = base64.decodestring(url_torrent.split('&u=')[1][::-1])
@@ -649,7 +641,7 @@ def info(item):
             plot = plot.replace(plot,"[COLOR white][B]"+plot+"[/B][/COLOR]")
             plot = plot.replace('div class="margin_20b">','')
             plot = plot.replace('div class="post-entry">','')
-            foto = item.plot
+            foto = item.category
             photo= item.extra
     ventana2 = TextBox1(title=title, plot=plot, thumbnail=photo, fanart=foto)
     ventana2.doModal()
@@ -694,9 +686,10 @@ def info_capitulos(item):
     url= item.url
     data = scrapertools.cachePage(url)
     data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
-    
-    id = item.show
-    url="https://www.themoviedb.org/tv/"+id+item.extra.split("|")[1]+"/season/"+item.extra.split("|")[0]+"/episode/"+item.extra.split("|")[2]
+    item.category = item.show.split("|")[0]
+    item.thumbnail = item.show.split("|")[1]
+    id = item.show.split("|")[2]
+    url="https://www.themoviedb.org/tv/"+item.show.split("|")[2]+item.extra.split("|")[1]+"/season/"+item.extra.split("|")[0]+"/episode/"+item.extra.split("|")[2]
     data = scrapertools.cachePage(url)
     data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
     patron = '<p><strong>Air Date:</strong>.*?content="(.*?)">'
@@ -709,7 +702,7 @@ def info_capitulos(item):
         image="http://s6.postimg.org/ub7pb76c1/noinfo.png"
     
     for day in matches:
-        url="http://thetvdb.com/api/GetEpisodeByAirDate.php?apikey=1D62F2F90030C444&seriesid="+item.plot+"&airdate="+day+"&language=es"
+        url="http://thetvdb.com/api/GetEpisodeByAirDate.php?apikey=1D62F2F90030C444&seriesid="+item.show.split("|")[0]+"&airdate="+day+"&language=es"
         if "%20Castle%20" in item.extra.split("|")[1]:
             url="http://thetvdb.com/api/GetEpisodeByAirDate.php?apikey=1D62F2F90030C444&seriesid=83462"+"&airdate="+day+"&language=es"
 
@@ -734,14 +727,14 @@ def info_capitulos(item):
                      foto = scrapertools.get_match(data,'<Data>.*?<filename>(.*?)</filename>')
                      fanart = "http://thetvdb.com/banners/" + foto
                  else:
-                     fanart=item.category
+                     fanart=item.show.split("|")[1]
             
                  plot = info
                  plot = plot.replace(plot,"[COLOR yellow][B]"+plot+"[/B][/COLOR]")
                  title = name_epi.upper()
                  title = title.replace(title,"[COLOR sandybrown][B]"+title+"[/B][/COLOR]")
                  image=fanart
-                 foto= item.category
+                 foto= item.show.split("|")[1]
     ventana = TextBox2(title=title, plot=plot, thumbnail=image, fanart=foto)
     ventana.doModal()
 
