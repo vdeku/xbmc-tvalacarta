@@ -26,15 +26,16 @@ __creationdate__ = "20140615"
 
 DEFAULT_HEADERS = []
 DEFAULT_HEADERS.append( ["User-Agent","Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; es-ES; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12"] )
+DEFAULT_HEADERS.append( ["Referer","http://www.pordede.com"] )
 
 def isGeneric():
     return True
 
 def login():
-
     url = "http://www.pordede.com/site/login"
     post = "LoginForm[username]="+config.get_setting("pordedeuser")+"&LoginForm[password]="+config.get_setting("pordedepassword")
-    data = scrapertools.cache_page(url,post=post)
+    headers = DEFAULT_HEADERS[:]
+    data = scrapertools.cache_page(url,headers=headers,post=post)
 
 def mainlist(item):
     logger.info("pelisalacarta.channels.pordede mainlist")
@@ -91,8 +92,10 @@ def menupeliculas(item):
 def generos(item):
     logger.info("pelisalacarta.channels.pordede generos")
 
+    headers = DEFAULT_HEADERS[:]
+    
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url)
+    data = scrapertools.cache_page(item.url, headers=headers)
     if (DEBUG): logger.info("data="+data)
 
     # Extrae las entradas (carpetas)
@@ -140,7 +143,7 @@ def buscar(item):
 
     # Descarga la pagina
     headers = DEFAULT_HEADERS[:]
-    headers.append(["Referer",item.extra])
+    #headers.append(["Referer",item.extra])
     headers.append(["X-Requested-With","XMLHttpRequest"])
     data = scrapertools.cache_page(item.url,headers=headers)
     if (DEBUG): logger.info("data="+data)
@@ -203,7 +206,7 @@ def siguientes(item):
 
     # Descarga la pagina
     headers = DEFAULT_HEADERS[:]
-    headers.append(["Referer",item.extra])
+    #headers.append(["Referer",item.extra])
     headers.append(["X-Requested-With","XMLHttpRequest"])
     data = scrapertools.cache_page(item.url,headers=headers)
     if (DEBUG): logger.info("data="+data)
@@ -248,9 +251,11 @@ def siguientes(item):
 def episodio(item):
     logger.info("pelisalacarta.channels.pordede episodio")
     itemlist = []
+    
+    headers = DEFAULT_HEADERS[:]
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url)
+    data = scrapertools.cache_page(item.url, headers=headers)
     if (DEBUG): logger.info("data="+data)
 
     session = str(int(item.extra.split("|")[0]))
@@ -289,7 +294,7 @@ def peliculas(item):
 
     # Descarga la pagina
     headers = DEFAULT_HEADERS[:]
-    headers.append(["Referer",item.extra])
+    #headers.append(["Referer",item.extra])
     headers.append(["X-Requested-With","XMLHttpRequest"])
     data = scrapertools.cache_page(item.url,headers=headers)
     if (DEBUG): logger.info("data="+data)
@@ -304,9 +309,11 @@ def peliculas(item):
 def episodios(item):
     logger.info("pelisalacarta.channels.pordede episodios")
     itemlist = []
+    
+    headers = DEFAULT_HEADERS[:]
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url)
+    data = scrapertools.cache_page(item.url, headers=headers)
     if (DEBUG): logger.info("data="+data)
 
     patrontemporada = '<div class="checkSeason"[^>]+>([^<]+)<div class="right" onclick="controller.checkSeason(.*?)\s+</div></div>'
@@ -335,8 +342,15 @@ def episodios(item):
             if (DEBUG): logger.info("title=["+title+"], url=["+url+"], thumbnail=["+thumbnail+"]")
 
     if config.get_platform().startswith("xbmc") or config.get_platform().startswith("boxee"):
-        itemlist.append( Item(channel='pordede', title="Añadir esta serie a la biblioteca de XBMC", url=item.url, action="add_serie_to_library", extra="episodios###", show=item.show) )
-        itemlist.append( Item(channel='pordede', title="Descargar todos los episodios de la serie", url=item.url, action="download_all_episodes", extra="episodios", show=item.show))
+        # con año y valoracion la serie no se puede actualizar correctamente, si ademas cambia la valoracion, creara otra carpeta
+        # Sin año y sin valoración:
+        show = re.sub(r"\s\(\d+\)\s\(\d+\.\d+\)", "", item.show)
+        # Sin año:
+        #show = re.sub(r"\s\(\d+\)", "", item.show)
+        # Sin valoración:
+        #show = re.sub(r"\s\(\d+\.\d+\)", "", item.show)
+        itemlist.append( Item(channel='pordede', title="Añadir esta serie a la biblioteca de XBMC", url=item.url, action="add_serie_to_library", extra="episodios###", show=show) )
+        itemlist.append( Item(channel='pordede', title="Descargar todos los episodios de la serie", url=item.url, action="download_all_episodes", extra="episodios", show=show))
 
     return itemlist
 
@@ -345,7 +359,7 @@ def parse_listas(item, patron):
 
     # Descarga la pagina
     headers = DEFAULT_HEADERS[:]
-    headers.append(["Referer",item.extra])
+    #headers.append(["Referer",item.extra])
     headers.append(["X-Requested-With","XMLHttpRequest"])
     data = scrapertools.cache_page(item.url,headers=headers)
     if (DEBUG): logger.info("data="+data)
@@ -406,7 +420,7 @@ def lista(item):
 
     # Descarga la pagina
     headers = DEFAULT_HEADERS[:]
-    headers.append(["Referer",item.extra])
+    #headers.append(["Referer",item.extra])
     headers.append(["X-Requested-With","XMLHttpRequest"])
     data = scrapertools.cache_page(item.url,headers=headers)
     if (DEBUG): logger.info("data="+data)
@@ -577,7 +591,8 @@ def checkseen(item):
         scrapertools.downloadpage("http://www.pordede.com/ajax/action", post="model=episode&id="+episode+"&action=seen&value=1")
 
     if "/what/peli" in item:
-        data = scrapertools.cache_page(item)
+        headers = DEFAULT_HEADERS[:]
+        data = scrapertools.cache_page(item, headers=headers)
         # GET MOVIE ID
         movieid = scrapertools.find_single_match(data,'href="/links/create/ref_id/([0-9]+)/ref_model/')
         scrapertools.downloadpage("http://www.pordede.com/ajax/mediaaction", post="model=peli&id="+movieid+"&action=status&value=3")
