@@ -19,7 +19,7 @@ __title__ = "Series Blanco"
 __language__ = "ES"
 
 host = "http://seriesblanco.com/"
-idiomas = {'es':'Español','la':'Latino','vos':'VOS','vo':'VO'}
+idiomas = {'es':'Español','la':'Latino','vos':'VOS','vo':'VO', 'japovose':'VOSE'}
 
 DEBUG = config.get_setting("debug")
 
@@ -93,8 +93,8 @@ def episodios(item):
     data = re.sub(r"<!--.*?-->","",data)
     data = re.sub(r"a></td><td> <img src=/banderas/","a><idioma/",data)
     data = re.sub(r" <img src=/banderas/","|",data)
-    data = re.sub(r"\.png border='\d+' height='\d+' width='\d+' /><","/idioma><",data)
-    data = re.sub(r"\.png border='\d+' height='\d+' width='\d+' />","",data)
+    data = re.sub(r"\.png border='\d+' height='\d+' width='\d+'[^>]+><","/idioma><",data)
+    data = re.sub(r"\.png border='\d+' height='\d+' width='\d+'[^>]+>","",data)
 
     #<a href='/serie/534/temporada-1/capitulo-00/the-big-bang-theory.html'>1x00 - Capitulo 00 </a></td><td> <img src=/banderas/vo.png border='0' height='15' width='25' /> <img src=/banderas/vos.png border='0' height='15' width='25' /></td></tr>
 
@@ -134,16 +134,20 @@ def findvideos(item):
 
     #<tr><td class='tam12'><img src='/banderas/es.png' width='30' height='20' /></td><td class='tam12'>2014-10-04</td><td class='tam12'><a href='/enlace/534/1/01/1444719/' rel='nofollow' target='_blank' alt=''><img src='/servidores/uploaded.jpg' width='80' height='25' /></a></td><td class='tam12'><center>Darkgames</center></td><td class='tam12'>SD</td></tr>
 
-    patron = "<td class='tam12'><img src='/banderas/([^\.]+)\.[^']+'[^>]+></td>"
+    #<tr><td class='tam12'><a href='/enlace/534/1/01/1445121/' rel='nofollow' target='_blank' alt=''><img src='/banderas/es.png' width='30' height='20' /></td><td class='tam12'>2014-10-04</td><td class='tam12'><center><a href='/enlace/534/1/01/1445121/' rel='nofollow' target='_blank' alt=''><img src='/servidores/allmyvideos.jpg' width='80' height='25' /></a></center></td><td class='tam12'><center><a href='/enlace/534/1/01/1445121/' rel='nofollow' target='_blank' alt=''>Darkgames</a></center></td><td class='tam12'></td></tr>
+
+    patron = "<td class='tam12'><a[^>]+><img src='/banderas/([^\.]+)\.[^']+'[^>]+></td>"
     patron+= "<td class='tam12'>([^<]+)</td>"
-    patron+= "<td class='tam12'><a href='([^']+)'[^>]+>"
-    patron+= "<img src='/servidores/([^\.]+)\.[^']+'[^>]+></a></td>"
-    patron+= "<td class='tam12'>[^<]+</td>"
-    patron+= "<td class='tam12'>([^<]+)</td>"
+    patron+= "<td class='tam12'[^<a]+<a href='([^']+)'[^>]+>"
+    patron+= "<img src='/servidores/([^\.]+)\.[^']+'[^>]+></a>.*?"
+    #patron+= "<td class='tam12'>[^<]+</td>"
+    patron+= "<td class='tam12'>([^<]+)</td></tr>"
     matches = re.compile(patron,re.DOTALL).findall(data)
 
     for scrapedidioma, scrapedfecha, scrapedurl, scrapedservidor, scrapedcalidad in matches:
+    #for scrapedidioma, scrapedfecha, scrapedurl, scrapedservidor in matches:
         title = "Ver en " + scrapedservidor + " [" + idiomas[scrapedidioma] + "] [" + scrapedcalidad + "] (" + scrapedfecha + ")"
+        #title = "Ver en " + scrapedservidor + " [" + idiomas[scrapedidioma] + "] (" + scrapedfecha + ") " + scrapedurl
         itemlist.append( Item(channel=__channel__, title =title , url=urlparse.urljoin(host,scrapedurl), action="play", show=item.show) )
 
     return itemlist
