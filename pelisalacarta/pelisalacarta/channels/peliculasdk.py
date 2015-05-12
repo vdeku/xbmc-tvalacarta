@@ -13,6 +13,10 @@ from core import scrapertools
 from core import jsontools
 from core.item import Item
 from servers import servertools
+try:
+    import xbmc
+    import xbmcgui
+except: pass
 
 __channel__ = "peliculasdk"
 __category__ = "F,S,D"
@@ -105,7 +109,7 @@ def peliculas(item):
     
     # Descarga la página
     data = scrapertools.cache_page(item.url)
-    data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
+    data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;|&#.*?;","",data)
     
     
     
@@ -148,23 +152,113 @@ def fanart(item):
     data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
     title= scrapertools.get_match(data,'<div id="titleopcions">Ver película(.*?)\(')
     title= re.sub(r"3D|SBS|-|","",title)
-    title= title.replace('Reparado','')
+    title= title.replace('á','a')
+    title= title.replace('Á','A')
+    title= title.replace('é','e')
+    title= title.replace('í','i')
+    title= title.replace('ó','o')
+    title= title.replace('ú','u')
+    title= title.replace('ñ','n')
+    title= title.replace('Crepusculo','Twilight')
     title= title.replace(' ','%20')
     url="http://api.themoviedb.org/3/search/movie?api_key=57983e31fb435df4df77afb854740ea9&query=" + title + "&language=es&include_adult=false"
     data = scrapertools.cachePage(url)
     data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
-    patron = '"page":1.*?"backdrop_path":"(.*?)".*?,"id"'
+    patron = '"page":1.*?"backdrop_path":"(.*?)".*?,"id":(.*?),"original_title"'
     matches = re.compile(patron,re.DOTALL).findall(data)
     if len(matches)==0:
-       item.extra=item.thumbnail
+        extra=item.thumbnail
+        show= item.thumbnail
+        category= item.thumbnail
+        itemlist.append( Item(channel=__channel__, title=item.title, url=item.url, action="findvideos", thumbnail=item.thumbnail, fanart=item.thumbnail ,extra=extra, show=show, category= category, folder=True) )
     else:
-        for fan in matches:
+        for fan, id in matches:
             fanart="https://image.tmdb.org/t/p/original" + fan
             item.extra= fanart
-    itemlist.append( Item(channel=__channel__, title =item.title , url=item.url, action="findvideos", thumbnail=item.thumbnail, fanart=item.extra, folder=True) )
+    #fanart_2 y arts
+                
+            url ="http://assets.fanart.tv/v3/movies/"+id+"?api_key=6fa42b0ef3b5f3aab6a7edaa78675ac2"
+            data = scrapertools.cachePage(url)
+            data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
+            patron = '"hdmovielogo":.*?"url": "([^"]+)"'
+            matches = re.compile(patron,re.DOTALL).findall(data)
+            if '"moviedisc"' in data:
+                disc = scrapertools.get_match(data,'"moviedisc":.*?"url": "([^"]+)"')
+            if '"movieposter"' in data:
+                poster = scrapertools.get_match(data,'"movieposter":.*?"url": "([^"]+)"')
+            if '"moviethumb"' in data:
+                thumb = scrapertools.get_match(data,'"moviethumb":.*?"url": "([^"]+)"')
+            if '"moviebanner"' in data:
+                 banner= scrapertools.get_match(data,'"moviebanner":.*?"url": "([^"]+)"')
+        
+            if len(matches)==0:
+               extra=  item.thumbnail
+               show = item.extra
+               category = item.extra
+               itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=item.thumbnail, fanart=item.extra,  extra=extra, show=show, category= category, folder=True) )
+        for logo in matches:
+            if '"hdmovieclearart"' in data:
+                clear=scrapertools.get_match(data,'"hdmovieclearart":.*?"url": "([^"]+)"')
+                if '"moviebackground"' in data:
+                     fanart_2=scrapertools.get_match(data,'"moviebackground":.*?"url": "([^"]+)"')
+                     extra=clear
+                     show= fanart_2
+                     if '"moviedisc"' in data:
+                        category= disc
+                     else:
+                         category= clear
+                     itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra, extra=extra,show=show, category= category, folder=True) )
+                else:
+                    extra= clear
+                    show=item.extra
+                    if '"moviedisc"' in data:
+                       category = disc
+                    else:
+                        category = clear
+                    itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra, extra=extra,show=show, category= category, folder=True) )
+                
+            if '"moviebackground"' in data:
+                fanart_2=scrapertools.get_match(data,'"moviebackground":.*?"url": "([^"]+)"')
+                if '"hdmovieclearart"' in data:
+                    clear=scrapertools.get_match(data,'"hdmovieclearart":.*?"url": "([^"]+)"')
+                    extra=clear
+                    show= fanart_2
+                    if '"moviedisc"' in data:
+                        category= disc
+                    else:
+                        category= clear
+                    
+                else:
+                    extra=logo
+                    show= fanart_2
+                    if '"moviedisc"' in data:
+                        category= disc
+                    else:
+                        category= logo
+                    itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra, extra=extra,show=show, category= category,  folder=True) )
+
+            if not '"hdmovieclearart"' in data and not '"moviebackground"' in data:
+                    extra= logo
+                    show=  item.extra
+                    if '"moviedisc"' in data:
+                        category= disc
+                    else:
+                         category= item.extra
+                    itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra,category= category, extra=extra,show=show ,  folder=True) )
+    
     title ="Info"
+    if len(item.extra)==0:
+        fanart=item.thumbnail
+    else:
+        fanart = item.extra
+
+    if '"movieposter"' in data:
+         thumbnail= poster
+
+    else:
+        thumbnail = item.thumbnail
     title = title.replace(title,"[COLOR skyblue]"+title+"[/COLOR]")
-    itemlist.append( Item(channel=__channel__, action="info" , title=title , url=item.url, thumbnail=item.thumbnail, fanart=item.extra, folder=False ))
+    itemlist.append( Item(channel=__channel__, action="info" , title=title , url=item.url, thumbnail=thumbnail, fanart=fanart, extra = extra, show = show,folder=False ))
 
 
     return itemlist
@@ -175,7 +269,7 @@ def findvideos(item):
     
     itemlist = []
     data = re.sub(r"<!--.*?-->","",scrapertools.cache_page(item.url))
-    
+    data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
     
     
     servers_data_list = {}
@@ -183,17 +277,6 @@ def findvideos(item):
     matches = re.compile(patron,re.DOTALL).findall(data)
     
     for server, id in matches:
-        servers_data_list.update({server:id})
-    
-    patron = "src='//www.peliculasdk.com(/[^\.]+\.js)'"
-    links = scrapertools.get_match(data,patron)
-    data_links = scrapertools.cache_page(urlparse.urljoin(host,links))
-
-    patron = 'function (\w+)\(id\).*?'
-    patron+= 'data-src="([^"]+)"'
-    matches = re.compile(patron,re.DOTALL).findall(data_links)
-
-    for server, url in matches:
         scrapedplot = scrapertools.get_match(data,'<span class="clms">(.*?)</div></div>')
         plotformat = re.compile('(.*?:) </span>',re.DOTALL).findall(scrapedplot)
         scrapedplot = scrapedplot.replace(scrapedplot,"[COLOR white]"+scrapedplot+"[/COLOR]")
@@ -202,6 +285,18 @@ def findvideos(item):
             scrapedplot = scrapedplot.replace(plot,"[COLOR red][B]"+plot+"[/B][/COLOR]")
         scrapedplot = scrapedplot.replace("</span>","[CR]")
         scrapedplot = scrapedplot.replace(":","")
+        servers_data_list.update({server:id})
+    
+    url = "http://www.peliculasdk.com/Js/videos.js"
+    data = scrapertools.cachePage(url)
+    data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
+
+    patron = 'function (\w+)\(id\).*?'
+    patron+= 'data-src="([^"]+)"'
+    matches = re.compile(patron,re.DOTALL).findall(data)
+
+    for server, url in matches:
+        
 
         if server in servers_data_list:
             video_url = re.sub(r"embed\-|\-630x400\.html","",url)
@@ -213,7 +308,7 @@ def findvideos(item):
             servertitle = servertitle.replace("api.video.","")
             servertitle = servertitle.replace("hqq.tv","netu.tv")
             title = "[COLOR orange]Ver en --[/COLOR]" + servertitle
-            itemlist.append( Item(channel=__channel__, title =title , url=video_url, action="play", thumbnail=item.thumbnail, plot=scrapedplot, fanart=item.fanart ) )
+            itemlist.append( Item(channel=__channel__, title =title , url=video_url, action="play", thumbnail=item.category, plot=scrapedplot, fanart=item.show ) )
 
     return itemlist
 
@@ -256,43 +351,44 @@ def info(item):
         plot = plot.replace(info,"[COLOR red][B]"+info+"[/B][/COLOR]")
     plot = plot.replace("</span>","[CR]")
     plot = plot.replace(":","")
-    fanart="http://s11.postimg.org/qu66qpjz7/zentorrentsfanart.jpg"
-    tbd = TextBox("DialogTextViewer.xml", os.getcwd(), "Default")
-    tbd.ask(title, plot,fanart)
-    del tbd
-    return
+    foto = item.show
+    photo= item.extra
 
-try:
-    import xbmc, xbmcgui
-    class TextBox( xbmcgui.WindowXMLDialog ):
+    ventana2 = TextBox1(title=title, plot=plot, thumbnail=photo, fanart=foto)
+    ventana2.doModal()
+
+class TextBox1( xbmcgui.WindowDialog ):
         """ Create a skinned textbox window """
         def __init__( self, *args, **kwargs):
             
-            pass
+            self.getTitle = kwargs.get('title')
+            self.getPlot = kwargs.get('plot')
+            self.getThumbnail = kwargs.get('thumbnail')
+            self.getFanart = kwargs.get('fanart')
+            
+            self.background = xbmcgui.ControlImage( 70, 20, 1150, 630, 'http://s6.postimg.org/58jknrvtd/backgroundventana5.png')
+            self.title = xbmcgui.ControlTextBox(140, 60, 1130, 50)
+            self.plot = xbmcgui.ControlTextBox( 140, 140, 1035, 600 )
+            self.thumbnail = xbmcgui.ControlImage( 813, 43, 390, 100, self.getThumbnail )
+            self.fanart = xbmcgui.ControlImage( 140, 351, 1035, 250, self.getFanart )
+            
+            self.addControl(self.background)
+            self.addControl(self.title)
+            self.addControl(self.plot)
+            self.addControl(self.thumbnail)
+            self.addControl(self.fanart)
+            
+            self.title.setText( self.getTitle )
+            self.plot.setText(  self.getPlot )
         
-        def onInit( self ):
-            try:
-                self.getControl( 5 ).setText( self.text )
-                self.getControl( 1 ).setLabel( self.title )
-            except: pass
+        def get(self):
+            self.show()
         
-        def onClick( self, controlId ):
-            pass
-        
-        def onFocus( self, controlId ):
-            pass
-        
-        def onAction( self, action ):
+        def onAction(self, action):
             self.close()
-        
-        def ask(self, title, text, image ):
-            self.title = title
-            self.text = text
-            self.image = "http://s9.postimg.org/vc0l27qgf/smyasigue.png"
-            self.doModal()
 
-except:
-    pass
+def test():
+    return True
 
 
 
