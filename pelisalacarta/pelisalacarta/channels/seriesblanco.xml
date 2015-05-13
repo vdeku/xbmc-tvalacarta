@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <version>
 	<name>seriesblanco</name>
-	<tag>5</tag>
+	<tag>6</tag>
 	<date>13/05/2015</date>
-	<changes>Añadida las opciones de descargas que faltaban</changes>
+	<changes>Arregalda la duplicidad online en download</changes>
 </version>
