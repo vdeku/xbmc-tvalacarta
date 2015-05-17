@@ -350,7 +350,7 @@ def fanart(item):
                                         category= disc
                                    else:
                                         category= clear
-                                        itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra, extra=extra,show=show,  category= category,folder=True) )
+                                   itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra, extra=extra,show=show,  category= category,folder=True) )
                               else:
                                    extra= clear
                                    show=item.extra
