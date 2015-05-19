@@ -283,7 +283,7 @@ def episodios(item):
 
 
 
-    patrontemporada = '<ul (temp[^<]+)>(.*?)>Marcar como vista</a>'
+    patrontemporada = '<ul (temp[^<]+)>(.*?)</ul>'
     matchestemporadas = re.compile(patrontemporada,re.DOTALL).findall(data)
     
     for nombre_temporada,bloque_episodios in matchestemporadas:
@@ -329,7 +329,7 @@ def episodios(item):
             fanart = urlparse.urljoin(host, fanart)
             scrapedurl = urlparse.urljoin(host, scrapedurl)
         
-            itemlist.append( Item(channel=__channel__, title =title , url=scrapedurl, action="findvideos", thumbnail=item.thumbnail, plot=scrapedplot, fanart=fanart, show=item.show.strip(), folder=True) )
+            if scrapedtitle != " ": itemlist.append( Item(channel=__channel__, title =title , url=scrapedurl, action="findvideos", thumbnail=item.thumbnail, plot=scrapedplot, fanart=fanart, show=item.show.strip(), folder=True) )
     if (config.get_platform().startswith("xbmc") or config.get_platform().startswith("boxee")) and len(itemlist)>0:
        itemlist.append( Item(channel=__channel__, title="Añadir esta serie a la biblioteca de XBMC", url=item.url, action="add_serie_to_library", extra="episodios", show=item.show) )
     
