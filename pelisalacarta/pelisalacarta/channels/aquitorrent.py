@@ -75,7 +75,7 @@ def buscador(item):
     data = re.sub(r'&/[^"]+">','">',data)
 
     patron = '<h2 class="post-title entry-title">.*?'
-    patron += '<a href="([^"]+)".*?>'
+    patron += '<a href=".([^"]+)".*?>'
     patron += '([^<]+)</a>.*?'
     patron += '<img src="([^"]+)".*?'
     patron += '<b>([^"]+)</b>'
@@ -92,16 +92,17 @@ def buscador(item):
         scrapedinfo = scrapedinfo.replace("<br>","-")
         scrapedinfo = scrapedinfo.replace(scrapedinfo,"[COLOR green]"+scrapedinfo+"[/COLOR]")
         scrapedtitle= scrapedtitle.replace(scrapedtitle,"[COLOR white]"+scrapedtitle+"[/COLOR]")
-        scrapedtitle = scrapedtitle + "(" + scrapedinfo + ")"
+        scrapedtitle = scrapedtitle + " (" + scrapedinfo + ")"
         # Arregla la url y thumbnail
         #scrapedurl = fix_url(scrapedurl)
         scrapedthumbnail = fix_url(scrapedthumbnail)
+        
         
         if "tipo=Docus" in item.url or "tipo=F1" in item.url or "tipo=MotoGP" in item.url or "tipo=Mundia" in item.url:
             action= "findvideos"
         else:
             action = "fanart"
-        itemlist.append( Item(channel=__channel__, title =scrapedtitle , url=scrapedurl, action=action, fanart="http://s9.postimg.org/lmwhrdl7z/aquitfanart.jpg", thumbnail=scrapedthumbnail) )
+        itemlist.append( Item(channel=__channel__, title =scrapedtitle , url= urlparse.urljoin(host, scrapedurl), action=action, fanart="http://s9.postimg.org/lmwhrdl7z/aquitfanart.jpg", thumbnail=scrapedthumbnail) )
 
     return itemlist
 
@@ -119,9 +120,9 @@ def peliculas(item):
     
     
     patron = '<div class="sompret-image">'
-    patron += '<a href="([^"]+)".*?>'
+    patron += '<a href=".([^"]+)".*?>'
     patron += '<img src="([^"]+)".*?'
-    patron += 'alt="([^"]+)".*?'
+    patron += 'title="(.*?) -.*?'
     patron += '<b>([^"]+)</b>'
 
     matches = re.compile(patron,re.DOTALL).findall(data)
@@ -134,7 +135,7 @@ def peliculas(item):
         scrapedinfo = scrapedinfo.replace("<br>","-")
         scrapedinfo = scrapedinfo.replace(scrapedinfo,"[COLOR green]"+scrapedinfo+"[/COLOR]")
         scrapedtitle= scrapedtitle.replace(scrapedtitle,"[COLOR white]"+scrapedtitle+"[/COLOR]")
-        scrapedtitle = scrapedtitle + "(" + scrapedinfo + ")"
+        scrapedtitle = scrapedtitle + " (" + scrapedinfo + ")"
         # Arregla la url y thumbnail
         #scrapedurl = fix_url(scrapedurl)
         scrapedthumbnail = fix_url(scrapedthumbnail)
@@ -143,7 +144,7 @@ def peliculas(item):
             action= "findvideos"
         else:
             action = "fanart"
-        itemlist.append( Item(channel=__channel__, title =scrapedtitle , url=scrapedurl, action=action, fanart="http://s9.postimg.org/lmwhrdl7z/aquitfanart.jpg", thumbnail=scrapedthumbnail) )
+        itemlist.append( Item(channel=__channel__, title =scrapedtitle , url=urlparse.urljoin(host, scrapedurl), action=action, fanart="http://s9.postimg.org/lmwhrdl7z/aquitfanart.jpg", thumbnail=scrapedthumbnail) )
 
     ## Paginación
     pagina = int(scrapertools.get_match(item.url,"pagina=(\d+)"))+1
