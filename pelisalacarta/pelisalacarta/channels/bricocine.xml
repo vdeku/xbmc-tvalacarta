@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <version>
 	<name>bricocine</name>
-	<tag>2</tag>
-	<date>07/04/2015</date>
-    <changes>bricocine: eliminada informacion erronea en plot vista info </changes>
+	<tag>3</tag>
+	<date>04/06/2015</date>
+    <changes>bricocine: Correción código arts por cambios en themoviedb </changes>
 </version>

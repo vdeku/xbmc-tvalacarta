@@ -188,7 +188,7 @@ def peliculas(item):
     if len(matches)>0:
         scrapedurl = urlparse.urljoin(item.url,matches[0])
         title= bbcode_kodi2html("[COLOR chocolate]siguiente>>[/COLOR]")
-        itemlist.append( Item(channel=__channel__, action="peliculas", title= title , url=scrapedurl , thumbnail="http://s6.postimg.org/9iwpso8k1/ztarrow2.png", fanart="http://s11.postimg.org/qu66qpjz7/zentorrentsfanart.jpg", folder=True) )
+        itemlist.append( Item(channel=__channel__, action="peliculas", title= title , url=scrapedurl , thumbnail="http://s6.postimg.org/9iwpso8k1/ztarrow2.png", fanart="http://s6.postimg.org/4j8vdzy6p/zenwallbasic.jpg", folder=True) )
     
     return itemlist
 
@@ -202,13 +202,13 @@ def fanart(item):
     
         if "microhd" in url or "web" in url or "1080" in url or "bluray" in url or  "HDRip" in item.title:
             title= scrapertools.get_match(data,'<title>([^"]+) \[')
-            title= re.sub(r"3D|SBS|-|","",title)
+            title= re.sub(r"3D|[0-9]|SBS|\(.*?\)|\[.*?\]|","",title)
             title=title.replace('Perdón','perdon')
             title= title.replace(' ','%20')
             url="http://api.themoviedb.org/3/search/movie?api_key=57983e31fb435df4df77afb854740ea9&query=" + title + "&language=es&include_adult=false"
             data = scrapertools.cachePage(url)
             data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
-            patron = '"page":1.*?"backdrop_path":"(.*?)".*?,"id":(.*?),"original_title"'
+            patron = '"page":1.*?"backdrop_path":"(.*?)".*?,"id":(.*?),'
             matches = re.compile(patron,re.DOTALL).findall(data)
             if len(matches)==0:
                 extra=item.thumbnail
@@ -306,7 +306,7 @@ def fanart(item):
                 url="http://api.themoviedb.org/3/search/movie?api_key=57983e31fb435df4df77afb854740ea9&query=" + title + "&language=es&include_adult=false"
                 data = scrapertools.cachePage(url)
                 data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
-                patron = '"page":1.*?"backdrop_path":"(.*?)".*?,"id":(.*?),"original_title"'
+                patron = '"page":1.*?"backdrop_path":"(.*?)".*?,"id":(.*?),'
                 matches = re.compile(patron,re.DOTALL).findall(data)
                 if len(matches)==0:
                     if len(matches)==0:
@@ -376,7 +376,7 @@ def fanart(item):
                                     if '"moviedisc"' in data:
                                          category= disc
                                     else:
-                                         category= clear
+                                         category= logo
                                     itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=logo, fanart=item.extra, extra=extra,show=show,  category= category, folder=True) )
                     
                     
@@ -533,7 +533,7 @@ def fanart(item):
                                 itemlist.append( Item(channel=__channel__, title = item.title , action="findvideos", url=item.url, server="torrent", thumbnail=thumbnail, fanart=item.extra, extra=extra,show=show , category = category, folder=True) )
             else:
                 title= scrapertools.get_match(data,'<title>([^"]+) -')
-                title= re.sub(r"3D|'|,|[0-9]|#|;|´|SBS|\[.*?\]|-|","",title)
+                title= re.sub(r"3D|'|,|[0-9]|#|;|´|VOSE|\[.*?\]|-|","",title)
                 title= title.replace('Temporada','')
                 title= title.replace('Fin','')
                 title= title.replace('x','')
@@ -818,7 +818,7 @@ def info(item):
     else:
         title= scrapertools.get_match(data,'<title>([^"]+) -')
         title = title.replace(title,bbcode_kodi2html("[COLOR aqua][B]"+title+"[/B][/COLOR]"))
-        plot = scrapertools.get_match(data,'onload="imgLoaded.*?</div>(.*?)<div class="zentorrents_download">')
+        plot = scrapertools.get_match(data,'onload="imgLoaded.*?</div><p>(.*?)<p class="descauto">')
         plot = plot.replace(plot,bbcode_kodi2html("[COLOR orange]"+plot+"[/COLOR]"))
         plot = plot.replace("&aacute;","á")
         plot = plot.replace("&iacute;","í")
@@ -834,6 +834,7 @@ def info(item):
         plot = plot.replace("&Ntilde;","Ñ")
         plot = plot.replace("<p>","")
         plot = plot.replace("</p>","")
+        plot = plot.replace("&amp;quot;","")
         if "series" in item.url:
             foto= item.category
             photo= item.extra
@@ -855,7 +856,7 @@ class TextBox1( xbmcgui.WindowDialog ):
             
             self.background = xbmcgui.ControlImage( 70, 20, 1150, 630, 'http://s6.postimg.org/58jknrvtd/backgroundventana5.png')
             self.title = xbmcgui.ControlTextBox(140, 60, 1130, 50)
-            self.plot = xbmcgui.ControlTextBox( 140, 140, 1035, 600 )
+            self.plot = xbmcgui.ControlTextBox( 140, 180, 1035, 600 )
             self.thumbnail = xbmcgui.ControlImage( 813, 43, 390, 100, self.getThumbnail )
             self.fanart = xbmcgui.ControlImage( 140, 351, 1035, 250, self.getFanart )
             
