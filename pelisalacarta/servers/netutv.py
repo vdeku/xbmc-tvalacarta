@@ -16,7 +16,7 @@ from core import config
 def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
     logger.info("[netutv.py] url="+page_url)
 
-    headers = [['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0']]
+    headers = [ ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0'] ]
 
     #"/netu/tv/"
     if "www.yaske.net" in page_url:
@@ -31,6 +31,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
             page_url_the_new_video_id = scrapertools.get_match( data , 'script src="([^"]+)"></script>')
             data_with_new_video_id = scrapertools.cache_page( page_url_the_new_video_id , headers=headers )
             #-------------------------------------
+            data_with_new_video_id = urllib.unquote( data_with_new_video_id )
             new_id_video = scrapertools.get_match( data_with_new_video_id , "var vid='([^']+)';")
             #-------------------------------------
             # Petición a hqq.tv con la nueva id de vídeo
@@ -79,7 +80,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
         data_with_url_video = scrapertools.cache_page(page_url_hqq_2, headers=headers )
 
-        match_b_m3u8 = '</div>[^<]+<script>[^"]+"([^"]+)"'
+        match_b_m3u8 = '</div>.*?<script>document.write[^"]+"([^"]+)"'
         b_m3u8 = urllib.unquote( scrapertools.get_match(data_with_url_video, match_b_m3u8) )
 
         match_b_m3u8_2 = '"#([^"]+)"'
@@ -127,7 +128,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
         headers.append(['Referer', page_url])
         data = scrapertools.cache_page(url_2, headers=headers )
 
-        match_b_m3u8 = '</div>[^<]+<script>[^"]+"([^"]+)"'
+        match_b_m3u8 = '</div>.*?<script>document.write[^"]+"([^"]+)"'
         b_m3u8 = urllib.unquote( scrapertools.get_match(data, match_b_m3u8) )
 
         if b_m3u8 == "undefined": b_m3u8 = urllib.unquote( data )
