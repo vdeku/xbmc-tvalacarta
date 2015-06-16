@@ -164,7 +164,7 @@ def fanart(item):
     url="http://api.themoviedb.org/3/search/movie?api_key=57983e31fb435df4df77afb854740ea9&query=" + title + "&language=es&include_adult=false"
     data = scrapertools.cachePage(url)
     data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
-    patron = '"page":1.*?"backdrop_path":"(.*?)".*?,"id":(.*?),"original_title"'
+    patron = '"page":1.*?"backdrop_path":"(.*?)".*?,"id":(.*?),'
     matches = re.compile(patron,re.DOTALL).findall(data)
     if len(matches)==0:
         extra=item.thumbnail
