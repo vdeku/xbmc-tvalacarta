@@ -24,6 +24,7 @@ __title__ = "Zentorrents"
 __language__ = "ES"
 
 DEBUG = config.get_setting("debug")
+host = "http://www.zentorrents.com/"
 
 def isGeneric():
     return True
@@ -697,10 +698,9 @@ def findvideos(item):
     data = scrapertools.cache_page(item.url)
     data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;|</p>|<p>|&amp;|amp;","",data)
     
-    patron = '<div class="descargatext">.*?'
-    patron += '<img alt="([^<]+)" '
+    patron = '<h1>(.*?)</h1>.*?'
     patron += 'src="([^"]+)".*?'
-    patron += 'type.*?href="([^"]+)"'
+    patron += '<a href.*?<a href="([^"]+)"'
     
     
     matches = re.compile(patron,re.DOTALL).findall(data)
@@ -738,8 +738,9 @@ def findvideos(item):
                 epi=""
                 
                 title_tag=bbcode_kodi2html("[COLOR pink]Ver--[/COLOR]")
-                scrapedtitulo = scrapedtitulo.replace(scrapedtitulo,bbcode_kodi2html("[COLOR bisue][B]"+scrapedtitulo+"[/B][/COLOR]"))
+                scrapedtitulo = scrapedtitulo.replace(scrapedtitulo,bbcode_kodi2html("[COLOR bisque][B]"+scrapedtitulo+"[/B][/COLOR]"))
                 scrapedtitulo = title_tag + scrapedtitulo
+                scrapedurl = urlparse.urljoin(host,scrapedurl)
                 itemlist.append( Item(channel=__channel__, title = scrapedtitulo , action="play", url=scrapedurl, server="torrent", thumbnail=thumbnail, fanart=fanart,  folder=False) )
             
             for id in matches:
@@ -760,6 +761,7 @@ def findvideos(item):
                     title_tag=bbcode_kodi2html("[COLOR pink]Ver--[/COLOR]")
                     scrapedtitulo = scrapedtitulo.replace(scrapedtitulo,bbcode_kodi2html("[COLOR bisque][B]"+scrapedtitulo+"[/B][/COLOR]"))
                     scrapedtitulo = title_tag + scrapedtitulo
+                    scrapedurl = urlparse.urljoin(host,scrapedurl)
                     itemlist.append( Item(channel=__channel__, title = scrapedtitulo , action="play", url=scrapedurl, server="torrent", thumbnail=thumbnail, fanart=fanart,  folder=False) )
                 for foto in matches:
                     thumbnail = "https://image.tmdb.org/t/p/original" + foto
@@ -769,6 +771,7 @@ def findvideos(item):
                     title_tag=bbcode_kodi2html("[COLOR pink]Ver--[/COLOR]")
                     scrapedtitulo = scrapedtitulo.replace(scrapedtitulo,bbcode_kodi2html("[COLOR bisque][B]"+scrapedtitulo+"[/B][/COLOR]"))
                     scrapedtitulo = title_tag + scrapedtitulo
+                    scrapedurl = urlparse.urljoin(host,scrapedurl)
                     itemlist.append( Item(channel=__channel__, title=scrapedtitulo, url=scrapedurl, action="play", server="torrent", thumbnail=thumbnail, category = item.category, fanart=fanart, folder=False) )
             extra= item.category+"|"+item.thumbnail+"|"+id+"|"+temp+"|"+epi+"|"+title
                     
@@ -780,6 +783,7 @@ def findvideos(item):
              infotitle= bbcode_kodi2html("[COLOR pink][B]Ver--[/B][/COLOR]")
              scrapedtitulo= scrapedtitulo.replace(scrapedtitulo,bbcode_kodi2html("[COLOR bisque]"+scrapedtitulo+"[/COLOR]"))
              title= infotitle + scrapedtitulo
+             scrapedurl = urlparse.urljoin(host,scrapedurl)
              if "peliculas" in item.url:
                  thumbnail= item.category
              else:
@@ -835,6 +839,8 @@ def info(item):
         plot = plot.replace("<p>","")
         plot = plot.replace("</p>","")
         plot = plot.replace("&amp;quot;","")
+        plot = plot.replace("</strong>","")
+        plot = plot.replace("<strong>","")
         if "series" in item.url:
             foto= item.category
             photo= item.extra
