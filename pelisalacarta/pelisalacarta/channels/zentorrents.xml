@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <version>
 	<name>zentorrents</name>
-	<tag>4</tag>
-	<date>16/06/2015</date>
-    <changes>zentorrents:  Correción por cambios web en url torrent </changes>
+	<tag>5</tag>
+	<date>19/06/2015</date>
+    <changes>zentorrents:  Correción Código arts en series por cambios theoviedb </changes>
 </version>

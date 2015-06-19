@@ -643,7 +643,7 @@ def findvideos(item):
 
             for id in matches:
                 if not '{"page":1,"results":[{"backdrop_path":null' in data:
-                         backdrop=scrapertools.get_match(data,'{"page".*?"backdrop_path":"(.*?)","id"')
+                         backdrop=scrapertools.get_match(data,'{"page".*?"backdrop_path":"(.*?)",.*?"id"')
                          fanart_3 = "https://image.tmdb.org/t/p/original" + backdrop
                          fanart = fanart_3
                 else:
