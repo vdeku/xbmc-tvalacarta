@@ -895,7 +895,7 @@ def info_capitulos(item):
     temp = item.extra.split("|")[3]
     epi = item.extra.split("|")[4]
     title = item.extra.split("|")[5]
-    url="https://www.themoviedb.org/tv/"+item.extra.split("|")[2]+item.extra.split("|")[5]+"/season/"+item.extra.split("|")[3]+"/episode/"+item.extra.split("|")[4]
+    url="https://www.themoviedb.org/tv/"+item.extra.split("|")[2]+item.extra.split("|")[5]+"/season/"+item.extra.split("|")[3]+"/episode/"+item.extra.split("|")[4]+"?language=en"
     data = scrapertools.cachePage(url)
     data = re.sub(r"\n|\r|\t|\s{2}|&nbsp;","",data)
     patron = '<p><strong>Air Date:</strong>.*?content="(.*?)">'
