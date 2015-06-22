@@ -389,6 +389,7 @@ def fanart(item):
           title= title.replace('ú','u')
           title= title.replace('ñ','n')
           title= title.replace(' ','%20')
+          title= title.replace('Temporada','')
           url="http://thetvdb.com/api/GetSeries.php?seriesname=" + title + "&language=es"
           if "Érase%20una%20vez" in url:
               url ="http://thetvdb.com/api/GetSeries.php?seriesname=Erase%20una%20vez%20(2011)&language=es"
@@ -614,6 +615,7 @@ def findvideos(item):
             title = scrapedtitle
             title= re.sub(r"\[.*?\]|-|Temporada.*?\d+|\d+x\d+|Fin","",title)
             title= title.replace(' ','%20')
+            title= title.replace('Temporada','')
             url="http://api.themoviedb.org/3/search/tv?api_key=57983e31fb435df4df77afb854740ea9&query="+title+"&language=es&include_adult=false"
             if "%2090210%20Sensacion%20de%20vivir" in url:
                 url="http://api.themoviedb.org/3/search/tv?api_key=57983e31fb435df4df77afb854740ea9&query=90210&language=es&include_adult=false"
