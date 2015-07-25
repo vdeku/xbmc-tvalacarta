@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <version>
 	<name>zentorrents</name>
-	<tag>7</tag>
-	<date>22/06/2015</date>
-    <changes>zentorrents: Córrección cambios web</changes>
+	<tag>8</tag>
+	<date>25/07/2015</date>
+    <changes>zentorrents: Córrección enlaces torrent + correción info</changes>
 </version>
